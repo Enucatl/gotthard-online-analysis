@@ -1,0 +1,25 @@
+#/bin/bash
+
+. config.txt
+
+
+
+if [ $# -lt 1 ]
+    then echo "Usage: $0 [HOSTNAME]"
+		exit 1
+fi
+
+echo check connection to $1
+sleep 1
+echo ok
+
+STR=$($G hostname | grep $1)
+if [ -z "$STR" ] 
+	then
+		echo "no connection to Blackfin $1"
+		exit 1
+fi 
+	
+exit 0
+
+echo script $0 done

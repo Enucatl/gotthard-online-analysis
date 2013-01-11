@@ -1,0 +1,31 @@
+
+### GOTTHARD CONFIG ###
+GOTTHARD_CLIENT=/home/l_cartier/psi/sls_det_software/newMythenSoftware/bin
+SETTINGS_DIR=/home/l_cartier/psi/sls_det_software/newMythenSoftware/settings
+#OUTDIR=/home/l_cartier/scratch/gotthardTest 
+RECEIVER=/home/l_cartier/psi/sls_det_software/newMythenSoftware/slsDetectorSoftware/slsDetectorReceiver/bin/slsDetectorReceiver
+
+P=$GOTTHARD_CLIENT/sls_detector_put
+G=$GOTTHARD_CLIENT/sls_detector_get
+
+#BFIN=bchip005
+VOLTAGE=120
+
+check_connection () {
+	STR=$($G hostname | grep $BFIN)
+	if [ -z "$STR" ] 
+		then
+			echo "connect to Blackfin ($BFIN) first"
+			exit
+	fi 
+	
+}
+
+
+#EXP_TIME=0.000001 
+#PERIOD=0.000033
+
+### MOTOR CONFIG ###
+MC=/home/l_cartier/ASoftware/socketClient
+X=detector_x
+A=detector_alpha

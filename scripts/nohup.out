@@ -1,0 +1,221 @@
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+function table assigned 
+
+receive data
+size of data received 4
+calling function fnum = 55 8049847
+file name:/home/l_cartier/scratch/run_
+
+receive data
+size of data received 4
+calling function fnum = 56 80499fb
+Starting new acquisition threadddd ....
+
+ Thread created successfully. Status:5
+
+server started with SAVE enabled 
+saving to /home/l_cartier/scratch/run_0_xxxxxxxx.dat 
+saving to  ... /home/l_cartier/scratch/run_0_000000000.dat 
+receive data
+size of data received 4
+calling function fnum = 56 80499fb
+
+saving to  ... /home/l_cartier/scratch/run_0_000000001.dat , packet loss 999.997500 % , framenum 439999
+saving to  ... /home/l_cartier/scratch/run_0_000000002.dat , packet loss 0.000000 % , framenum 479999
+saving to  ... /home/l_cartier/scratch/run_0_000000003.dat , packet loss 0.000000 % , framenum 519999
+saving to  ... /home/l_cartier/scratch/run_0_000000004.dat , packet loss 6.490000 % , framenum 562595
+saving to  ... /home/l_cartier/scratch/run_0_000000005.dat , packet loss 2.515000 % , framenum 603601
+saving to  ... /home/l_cartier/scratch/run_0_000000006.dat , packet loss 0.420000 % , framenum 643769
+saving to  ... /home/l_cartier/scratch/run_0_000000007.dat , packet loss 0.820000 % , framenum 684097
+saving to  ... /home/l_cartier/scratch/run_0_000000008.dat , packet loss 1.640000 % , framenum 724753
+saving to  ... /home/l_cartier/scratch/run_0_000000009.dat , packet loss 42.355000 % , framenum 781695
+saving to  ... /home/l_cartier/scratch/run_0_000000010.dat , packet loss 1.495000 % , framenum 822293
+saving to  ... /home/l_cartier/scratch/run_0_000000011.dat , packet loss 0.335000 % , framenum 862427
+saving to  ... /home/l_cartier/scratch/run_0_000000012.dat , packet loss 0.000000 % , framenum 902427
+saving to  ... /home/l_cartier/scratch/run_0_000000013.dat , packet loss 15.360000 % , framenum 948571
+saving to  ... /home/l_cartier/scratch/run_0_000000014.dat , packet loss 0.000000 % , framenum 988571
+saving to  ... /home/l_cartier/scratch/run_0_000000015.dat , packet loss 7.840000 % , framenum 1031707
+saving to  ... /home/l_cartier/scratch/run_0_000000016.dat , packet loss 0.000000 % , framenum 1071707
+saving to  ... /home/l_cartier/scratch/run_0_000000017.dat , packet loss 0.000000 % , framenum 1111707
+saving to  ... /home/l_cartier/scratch/run_0_000000018.dat , packet loss 3.260000 % , framenum 1153011
+saving to  ... /home/l_cartier/scratch/run_0_000000019.dat , packet loss 0.000000 % , framenum 1193011
+saving to  ... /home/l_cartier/scratch/run_0_000000020.dat , packet loss 0.400000 % , framenum 1233171
+saving to  ... /home/l_cartier/scratch/run_0_000000021.dat , packet loss 8.885000 % , framenum 1276725
+saving to  ... /home/l_cartier/scratch/run_0_000000022.dat , packet loss 0.000000 % , framenum 1316725
+saving to  ... /home/l_cartier/scratch/run_0_000000023.dat , packet loss 7.890000 % , framenum 1359881
+saving to  ... /home/l_cartier/scratch/run_0_000000024.dat , packet loss 0.000000 % , framenum 1399881
+saving to  ... /home/l_cartier/scratch/run_0_000000025.dat , packet loss 0.420000 % , framenum 1440049
+saving to  ... /home/l_cartier/scratch/run_0_000000026.dat , packet loss 0.355000 % , framenum 1480191
+saving to  ... /home/l_cartier/scratch/run_0_000000027.dat , packet loss 0.000000 % , framenum 1520191
+saving to  ... /home/l_cartier/scratch/run_0_000000028.dat , packet loss 1.035000 % , framenum 1560605
+saving to  ... /home/l_cartier/scratch/run_0_000000029.dat , packet loss 0.000000 % , framenum 1600605
+saving to  ... /home/l_cartier/scratch/run_0_000000030.dat , packet loss 0.440000 % , framenum 1640781
+saving to  ... /home/l_cartier/scratch/run_0_000000031.dat , packet loss 0.755000 % , framenum 1681083
+saving to  ... /home/l_cartier/scratch/run_0_000000032.dat , packet loss 0.000000 % , framenum 1721083
+saving to  ... /home/l_cartier/scratch/run_0_000000033.dat , packet loss 0.985000 % , framenum 1761477
+saving to  ... /home/l_cartier/scratch/run_0_000000034.dat , packet loss 0.000000 % , framenum 1801477
+saving to  ... /home/l_cartier/scratch/run_0_000000035.dat , packet loss 0.430000 % , framenum 1841649
+saving to  ... /home/l_cartier/scratch/run_0_000000036.dat , packet loss 0.920000 % , framenum 1882017
+saving to  ... /home/l_cartier/scratch/run_0_000000037.dat , packet loss 0.000000 % , framenum 1922017
+saving to  ... /home/l_cartier/scratch/run_0_000000038.dat , packet loss 1.465000 % , framenum 1962603
+saving to  ... /home/l_cartier/scratch/run_0_000000039.dat , packet loss 0.000000 % , framenum 2002603
+Closing file
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+function table assigned 
+
+receive data
+size of data received 4
+calling function fnum = 55 8049847
+file name:/home/l_cartier/scratch//run_
+
+receive data
+size of data received 4
+calling function fnum = 56 80499fb
+Starting new acquisition threadddd ....
+
+ Thread created successfully. Status:5
+
+server started with SAVE enabled 
+saving to /home/l_cartier/scratch//run_0_xxxxxxxx.dat 
+saving to  ... /home/l_cartier/scratch//run_0_000000000.dat 
+receive data
+size of data received 4
+calling function fnum = 56 80499fb
+
+Closing file
+function table assigned 
+
+receive data
+size of data received 4
+calling function fnum = 55 8049847
+file name:/home/l_cartier/scratch//run_
+
+receive data
+size of data received 4
+calling function fnum = 56 80499fb
+Starting new acquisition threadddd ....
+
+ Thread created successfully. Status:5
+
+server started with SAVE enabled 
+saving to /home/l_cartier/scratch//run_0_xxxxxxxx.dat 
+saving to  ... /home/l_cartier/scratch//run_0_000000000.dat 
+receive data
+size of data received 4
+calling function fnum = 56 80499fb
+
+Closing file
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+Can not create socket
+server error!
+function table assigned 
+
+receive data
+size of data received 4
+calling function fnum = 55 8049847
+file name:/home/l_cartier/scratch//run_
+
+receive data
+size of data received 4
+calling function fnum = 56 80499fb
+Starting new acquisition threadddd ....
+
+ Thread created successfully. Status:5
+
+server started with SAVE enabled 
+saving to /home/l_cartier/scratch//run_0_xxxxxxxx.dat 
+saving to  ... /home/l_cartier/scratch//run_0_000000000.dat 
+receive data
+size of data received 4
+calling function fnum = 56 80499fb
+
+Closing file
+function table assigned 
+
+receive data
+size of data received 4
+calling function fnum = 55 8049847
+file name:/home/l_cartier/scratch//run_
+
+receive data
+size of data received 4
+calling function fnum = 56 80499fb
+Starting new acquisition threadddd ....
+
+ Thread created successfully. Status:5
+
+server started with SAVE enabled 
+saving to /home/l_cartier/scratch//run_0_xxxxxxxx.dat 
+saving to  ... /home/l_cartier/scratch//run_0_000000000.dat 
+receive data
+size of data received 4
+calling function fnum = 56 80499fb
+
+Closing file
+Can not create socket
+server error!
