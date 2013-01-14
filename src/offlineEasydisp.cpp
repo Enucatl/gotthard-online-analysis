@@ -292,14 +292,14 @@ int main(int argc, char* argv[]) {
 		mvprintw(7,0,"s: INC n: next frame p: pre frame j: %i frwrd b: %i bkwrd r: reset pedestal q: quit",bi,bi);
 
 		if(disp < 0){
-			mvprintw(1,0,"                                   ");
-			mvprintw(2,0,"                                   ");
+			mvprintw(1,0,"");
+			mvprintw(2,0,"");
 		}
 
 		if(irun < 400){
-			mvprintw(9,0,"CALC PEDESTAL ... (%i)    ",400 - irun);
+			mvprintw(9,0,"CALC PEDESTAL ... (%i)",400 - irun);
 		}else{
-			mvprintw(9,0,"CALC PEDESTAL ... DONE    ");
+			mvprintw(9,0,"CALC PEDESTAL ... DONE");
 		}
 
 		if(c>0){
