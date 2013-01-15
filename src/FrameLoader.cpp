@@ -23,7 +23,7 @@ FrameLoader::FrameLoader(string filePrefix, int trialNumber) {
 
     internalError_ = 0;
     firstFrameNumber_ = readFirstFrameNumber(0);
-    if(internalError_<0){
+    if(internalError_ < 0){
         cerr << "SmallFrameLoader: Can not open Dataset: " << filePrefix_ << " (int err=" << internalError_ << ")" << endl;
         firstFrameNumber_ = 0;
         lastFrameNumber_ = 0;
@@ -158,14 +158,14 @@ int FrameLoader::readLastFrameNumber(int fileNumber){
     int lfn = 0;
     FILE *lf = openFile(fileNumber);
     if(lf != NULL){
-        fseek(lf,0,SEEK_END);
+        fseek(lf, 0, SEEK_END);
         int fs = ftell(lf);
         *debugout_ << "FrameLoader::readLastFrameNumber: last file has length " << fs << endl;
         *debugout_ << "FrameLoader::readLastFrameNumber: file length % 1286 = " << fs % 1286 << endl;
-        *debugout_ << "FrameLoader::readLastFrameNumber: will search at position " << fs -1286-(fs%1286) << " for last frame number" << endl;
-        fseek(lf,-1286-(fs%1286),SEEK_END);
+        *debugout_ << "FrameLoader::readLastFrameNumber: will search at position " << fs - 1286 - (fs % 1286) << " for last frame number" << endl;
+        fseek(lf, -1286 - (fs % 1286), SEEK_END);
         mypack lastFrame;
-        if(readHalfFrame(lf,&lastFrame)<1){
+        if(readHalfFrame(lf, &lastFrame) < 1){
             cerr << "could not read last frame in last file" << endl;
             lfn = -2;
             internalError_ = -2;
@@ -311,7 +311,7 @@ vector<FullFrame*> FrameLoader::readFrames(int startFrameNumber, int amountOfFul
                     cerr << "FrameLoader::readFrames: reached end of dataset while reading frames" << endl;
                     return v;
                 }
-                readNextCompleteFrame(f,ff);
+                readNextCompleteFrame(f, ff);
                 *debugout_ << "Ok. First frame of new file is: " << ff->frame1_number << endl;
             }
             v.push_back(ff);

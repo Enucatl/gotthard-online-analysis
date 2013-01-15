@@ -45,6 +45,7 @@ class FrameLoader {
         std::vector<FullFrame*> readFrames(int startFrameNumber, int amountOfFullFrames);
         FullFrame *readFrame(int frameNumber);
         std::vector<FullFrame*> loadAll();
+        int firstFrameNumber() const {return firstFrameNumber_;}
 
     private:
         void readNextCompleteFrame(FILE *f, FullFrame* ff, mypack*firstHalf=NULL);
