@@ -7,7 +7,7 @@ PedestalCalculator::PedestalCalculator(std::string file_prefix,
 frame_loader_(file_prefix, trial_number),
 pedestal_histogram_("pedestal", "pedestal",
         CHANNEL_NUMBER, 0, CHANNEL_NUMBER) {
-    full_frames_ = frame_loader_.readFrames(frame_loader_.firstFrameNumber() + start_frame_number, amount_of_full_frames);
+    full_frames_ = frame_loader_.readFrames(start_frame_number, amount_of_full_frames);
 }
 
 PedestalCalculator::~PedestalCalculator(){
@@ -16,7 +16,7 @@ PedestalCalculator::~PedestalCalculator(){
     }
 }
 
-int PedestalCalculator::calculate_pedestal(){
+void PedestalCalculator::calculate_pedestal(){
     std::vector<double> total_frame(CHANNEL_NUMBER, 0);
     for (std::vector<FullFrame*>::iterator i = full_frames_.begin(); i != full_frames_.end(); ++i) {
         int total_frames = full_frames_.size();

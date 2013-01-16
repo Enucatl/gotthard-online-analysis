@@ -8,12 +8,15 @@
 #ifndef FRAMELOADER_H_
 #define FRAMELOADER_H_
 
-#include <string>
 #include <iostream>
+#include <string>
 #include <sstream>
 #include <vector>
 #include <map>
 #include <fstream>
+#include <cstring>
+
+#include "TH1.h"
 
 const int BUFFER_LENGTH = 1286;
 const int HALFNCH = 640;
@@ -23,11 +26,10 @@ const int FRAMES_PER_FILE = 20000;
 #define tmpDir "/tmp/GotthardFileSets_"
 #define DEBUG
 
-struct mypack {
-    // char someheader[];
+struct MyPacket {
+    MyPacket(): framenum(-1) {};
     int framenum;
     unsigned short inar[HALFNCH+1];
-    //unsigned short space;
 };
 
 struct FullFrame {
@@ -42,23 +44,21 @@ class FrameLoader {
         virtual ~FrameLoader();
         void update();
 
+        FullFrame* readFrame(int frameNumber);
         std::vector<FullFrame*> readFrames(int startFrameNumber, int amountOfFullFrames);
-        FullFrame *readFrame(int frameNumber);
         std::vector<FullFrame*> loadAll();
-        int firstFrameNumber() const {return firstFrameNumber_;}
 
     private:
-        void readNextCompleteFrame(FILE *f, FullFrame* ff, mypack*firstHalf=NULL);
-        FILE *openFile(int number);
+        void readNextCompleteFrame(std::ifstream& f, FullFrame& ff, MyPacket& firstHalf);
+        bool openFile(int number, std::ifstream& f);
         int readFirstFrameNumber(int fileNumber);
         int readLastFrameNumber(int fileNumber);
-        bool readHalfFrame(FILE *f, mypack *p);
-        int createStartIndexMap(int fileNr = 0);
+        std::istream& readHalfFrame(const std::istream &f, MyPacket& p);
+        int createStartIndexMap(int fileNr=0);
         void storeStartIndexMap();
         bool readStartIndexMap();
-        FILE *findFileWithFrame(int frameNumber);
-        FILE *_findFileWithFrame(int frameNumber);
-        void readHalfFrameStartingFrom(FILE *f, mypack *p, int frameNumber);
+        int findFileWithFrame(int frameNumber);
+        void readHalfFrameStartingFrom(std::ifstream& f, MyPacket& p, int frameNumber);
         void analyzeFileSetName(std::string filePrefix, int trialNumber);
 
         std::string filePrefix_;

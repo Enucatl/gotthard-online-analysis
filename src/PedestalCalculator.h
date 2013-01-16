@@ -11,7 +11,7 @@ public:
             int start_frame_number,
             int amount_of_full_frames);
     ~PedestalCalculator();
-    int calculate_pedestal();
+    void calculate_pedestal();
     int save_histogram(std::string output_name);
     const TH1D& get_histogram() { return pedestal_histogram_; }
 private:
