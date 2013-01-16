@@ -7,13 +7,12 @@
 
 #include "FrameLoader.h"
 
-FrameLoader::FrameLoader(string filePrefix, int trialNumber) {
+FrameLoader::FrameLoader(std::string filePrefix, int trialNumber):
+debugout_(std::cout.rdbuf()) {
 #ifndef DEBUG
-    ofstream *dd = new ofstream();
-    dd->open("/dev/null");
-    debugout_ = dd;
-#else
-    debugout_ = &cout;
+    filebuf fb;
+    fb.open("/dev/null");
+    debugout_.rdbuf(&fb);
 #endif
 
     analyzeFileSetName(filePrefix, trialNumber);
@@ -21,74 +20,76 @@ FrameLoader::FrameLoader(string filePrefix, int trialNumber) {
     internalError_ = 0;
     firstFrameNumber_ = readFirstFrameNumber(0);
     if(internalError_ < 0){
-        cerr << "SmallFrameLoader: Can not open Dataset: " << filePrefix_ << " (int err=" << internalError_ << ")" << endl;
+        std::cerr << "SmallFrameLoader: Can not open Dataset: " << filePrefix_ << " (int err=" << internalError_ << ")" << std::endl;
         firstFrameNumber_ = 0;
         lastFrameNumber_ = 0;
         return;
     }
     if(!readStartIndexMap()){
-        cout << "recreating index ..." << flush;
+        std::cout << "recreating index ..." << std::flush;
         createStartIndexMap();
         storeStartIndexMap();
-        cout << "done" << endl;
+        std::cout << "done" << std::endl;
     }else{
         storeStartIndexMap();
     }
 
-    *debugout_ << "First Frame Number of files: " << filePrefix_ << "* is: " << firstFrameNumber_ << endl;
-    *debugout_ << "Last  Frame Number of files: " << filePrefix_ << "* is: " << lastFrameNumber_ << endl;
-    *debugout_ << "There are " << lastFrameNumber_ - firstFrameNumber_ << " frames (expect lost frames) in this file set" << endl;
-    *debugout_ << "Offset is " << offset_ << endl;  
-    *debugout_ << "Total files: " << startIndexMap_.size() << endl;
+    debugout_ << "First Frame Number of files: " << filePrefix_ << "* is: " << firstFrameNumber_ << std::endl;
+    debugout_ << "Last  Frame Number of files: " << filePrefix_ << "* is: " << lastFrameNumber_ << std::endl;
+    debugout_ << "There are " << lastFrameNumber_ - firstFrameNumber_ << " frames (expect lost frames) in this file set" << std::endl;
+    debugout_ << "Offset is " << offset_ << std::endl;  
+    debugout_ << "Total files: " << startIndexMap_.size() << std::endl;
 }                                 
 
 FrameLoader::~FrameLoader() {
-    *debugout_ << "deconstructor of FrameLoader called" << endl;
+    debugout_ << "deconstructor of FrameLoader called" << std::endl;
 }                       
 
-void FrameLoader::analyzeFileSetName(string filePrefix, int trialNumber){
+void FrameLoader::analyzeFileSetName(std::string filePrefix, int trialNumber){
     long long int dataOffset = 0;
     trialNumber_ = trialNumber;
     filePrefix_ = filePrefix;
 
-    *debugout_ << "FrameLoader::analyzeFileSetName: without trial number " << filePrefix << endl;
-    *debugout_ << "FrameLoader::analyzeFileSetName: trial number is " << trialNumber << endl;
+    debugout_ << "FrameLoader::analyzeFileSetName: without trial number " << filePrefix << std::endl;
+    debugout_ << "FrameLoader::analyzeFileSetName: trial number is " << trialNumber << std::endl;
 
-    istringstream withoutTrialNumberStream(filePrefix.c_str());
+    std::istringstream withoutTrialNumberStream(filePrefix.c_str());
 
     std::getline(withoutTrialNumberStream, filePrefix, ':');
     withoutTrialNumberStream >> dataOffset;
 
 
-    *debugout_ << "FrameLoader::analyzeFileSetName: dataOffset is " << dataOffset << endl;
-    *debugout_ << "FrameLoader::analyzeFileSetName: filePrefix " << filePrefix << endl;
+    debugout_ << "FrameLoader::analyzeFileSetName: dataOffset is " << dataOffset << std::endl;
+    debugout_ << "FrameLoader::analyzeFileSetName: filePrefix " << filePrefix << std::endl;
 
 
     if(dataOffset < 0){
         offset_ = lastFrameNumber_ + dataOffset - firstFrameNumber_;
-    }else{
+    }
+    else {
         offset_ = dataOffset;
     }
 
     if(trialNumber >= 0){
-        *debugout_ << "FrameLoader::analyzeFileSetName: enable isGuiFileSet_ mode" << endl;
+        debugout_ << "FrameLoader::analyzeFileSetName: enable isGuiFileSet_ mode" << std::endl;
         isGuiFileSet_ = true;
-    }else{
+    }
+    else {
         isGuiFileSet_ = false;
     }
 }
 
 int FrameLoader::readFirstFrameNumber(int fileNumber){
-    ifstream firstFile;
+    std::ifstream firstFile;
     bool open_success = openFile(fileNumber, firstFile);
     int firstIndex = -1;
     if(!open_success){
         internalError_ = -1;
         return -1;
     }
-    MyPacket pack;
+    Packet p;
     if(readHalfFrame(firstFile, p)){
-        firstIndex = p->framenum;
+        firstIndex = p.framenum;
     }
     else {
         internalError_ = -2;
@@ -97,12 +98,8 @@ int FrameLoader::readFirstFrameNumber(int fileNumber){
     return firstIndex;
 }
 
-std::istream& FrameLoader::readHalfFrame(const std::istream& f, MyPacket& p){
-    //cout << "try to read half frame" << endl;
-    f.read(reinterpret_cast<char*>(&(p.framenum)),
-            syzeof(int));
-    int size = BUFFER_LENGTH - sizeof(int);
-    return f.read(reinterpret_cast<char*>(p->inar), size);
+std::istream& FrameLoader::readHalfFrame(std::istream& f, Packet& p){
+    return p.read_packet(f);
 }
 
 bool FrameLoader::openFile(int number, std::ifstream& f){
@@ -110,30 +107,30 @@ bool FrameLoader::openFile(int number, std::ifstream& f){
     filename << filePrefix_;
     if(isGuiFileSet_){
         filename << "f";
-        filename.fill("0");
+        filename.fill('0');
         filename.width(12);
-        filename << number * FRAMES_PER_FILE << "_" << trialNumber_ << ".raw";
-        *debugout_ << "FrameLoader::openFile: Try to open file " << filename << endl;
+        filename << number * gotthard_constants::kFramesPerFile << "_" << trialNumber_ << ".raw";
+        debugout_ << "FrameLoader::openFile: Try to open file " << filename << std::endl;
         f.open(filename.str().c_str(), std::ifstream::binary);
         if(!f.good()){
-            *debugout_ << "FrameLoader::openFile: can not open " << filename << endl;
+            debugout_ << "FrameLoader::openFile: can not open " << filename << std::endl;
         }
     } else {
-        filename.fill("0");
+        filename.fill('0');
         filename.width(9);
         filename << number << ".dat";
-        *debugout_ << "FrameLoader::openFile: Try to open file " << filename << endl;
+        debugout_ << "FrameLoader::openFile: Try to open file " << filename << std::endl;
         f.open(filename.str().c_str(), std::ifstream::binary);
         if(!f.good()){
-            *debugout_ << "FrameLoader::openFile: *.dat doesnt work" << endl;
+            debugout_ << "FrameLoader::openFile: *.dat doesnt work" << std::endl;
             std::stringstream new_filename;
-            new_filename.fill("0");
+            new_filename.fill('0');
             new_filename.width(9);
             new_filename << number << ".raw";
-            *debugout_ << "FrameLoader::openFile: Try to open file " << new_filename << endl;
+            debugout_ << "FrameLoader::openFile: Try to open file " << new_filename << std::endl;
             f.open(new_filename.str().c_str(), std::ifstream::binary);
             if(!f.good()){
-                *debugout_ << "FrameLoader::openFile: *.raw doesnt work" << endl;
+                debugout_ << "FrameLoader::openFile: *.raw doesnt work" << std::endl;
             }
         }
     }
@@ -151,29 +148,29 @@ int FrameLoader::createStartIndexMap(int fileNr){
         startFrameNumber = readFirstFrameNumber(fileNr);
 
         if(fileNr % 100 == 0){
-            *debugout_ << "FrameLoader::createStartIndexMap: index for file Nr. " << fileNr << " startFrameNumber is : " << startFrameNumber << endl;
+            debugout_ << "FrameLoader::createStartIndexMap: index for file Nr. " << fileNr << " startFrameNumber is : " << startFrameNumber << std::endl;
         }
     }
     lastFrameNumber_ = readLastFrameNumber(fileNr - 1);
-    *debugout_ << "FrameLoader::createStartIndexMap: done" << endl;
+    debugout_ << "FrameLoader::createStartIndexMap: done" << std::endl;
     return fileNr;
 }
 
 int FrameLoader::readLastFrameNumber(int fileNumber){
-    *debugout_ << "FrameLoader::readLastFrameNumber: find last frame in file: " << fileNumber << endl;
+    debugout_ << "FrameLoader::readLastFrameNumber: find last frame in file: " << fileNumber << std::endl;
     int lfn = 0;
-    ifstream lf;
+    std::ifstream lf;
     bool open_success = openFile(fileNumber, lf);
     if(open_success){
         lf.seekg(0, std::ifstream::end);
         int fs = lf.tellg();
-        *debugout_ << "FrameLoader::readLastFrameNumber: last file has length " << fs << endl;
-        *debugout_ << "FrameLoader::readLastFrameNumber: file length % 1286 = " << fs % 1286 << endl;
-        *debugout_ << "FrameLoader::readLastFrameNumber: will search at position " << fs - 1286 - (fs % 1286) << " for last frame number" << endl;
+        debugout_ << "FrameLoader::readLastFrameNumber: last file has length " << fs << std::endl;
+        debugout_ << "FrameLoader::readLastFrameNumber: file length % 1286 = " << fs % 1286 << std::endl;
+        debugout_ << "FrameLoader::readLastFrameNumber: will search at position " << fs - 1286 - (fs % 1286) << " for last frame number" << std::endl;
         lf.seekg(-1286 - (fs % 1286), std::ifstream::end);
-        MyPacket lastFrame;
+        Packet lastFrame;
         if(readHalfFrame(lf, lastFrame).bad()){
-            cerr << "could not read last frame in last file" << endl;
+            std::cerr << "could not read last frame in last file" << std::endl;
             lfn = -2;
             internalError_ = -2;
         } else {
@@ -181,22 +178,22 @@ int FrameLoader::readLastFrameNumber(int fileNumber){
         }
     }
     else {
-        cerr << "could not determine last framenumber of fileSet" << endl;
+        std::cerr << "could not determine last framenumber of fileSet" << std::endl;
         lfn = -1;
         internalError_ = -1;
     }
-    *debugout_ << "FrameLoader::readLastFrameNumber: done (" << lfn << ")" << endl;
+    debugout_ << "FrameLoader::readLastFrameNumber: done (" << lfn << ")" << std::endl;
     return lfn;
 }
 
 bool FrameLoader::readStartIndexMap(){
-    ifstream mapFile;
-    stringstream mapFileName;
-    mapFileName << string(tmpDir) << firstFrameNumber_ << string("_indexBigFrame.txt");
-    *debugout_ << "FrameLoader::readStartIndexMap(): Try to open File: " << mapFileName << endl;
+    std::ifstream mapFile;
+    std::stringstream mapFileName;
+    mapFileName << tmpDir << firstFrameNumber_ << "_indexBigFrame.txt";
+    debugout_ << "FrameLoader::readStartIndexMap(): Try to open File: " << mapFileName << std::endl;
     mapFile.open(mapFileName.str().c_str());
     if(mapFile.is_open()){
-        string dump, fileset;
+        std::string dump, fileset;
         std::getline(mapFile, dump, ':');
         mapFile >> fileset;
         if(fileset == filePrefix_){
@@ -206,132 +203,125 @@ bool FrameLoader::readStartIndexMap(){
             while(mapFile >> fileNum >> frameNum){
                 startIndexMap_[fileNum] = frameNum;
             }
-            *debugout_ << "FrameLoader::readStartIndexMap(): read " << fileNum << " entries. startIndex of last: " << frameNum << endl;
-            *debugout_ << "FrameLoader::readStartIndexMap(): check for newly added files" << endl;
+            debugout_ << "FrameLoader::readStartIndexMap(): read " << fileNum << " entries. startIndex of last: " << frameNum << std::endl;
+            debugout_ << "FrameLoader::readStartIndexMap(): check for newly added files" << std::endl;
             fileNum = createStartIndexMap(fileNum + 1);
-            *debugout_ << "FrameLoader::readStartIndexMap(): now there are " << fileNum << " files indexed" << endl;
+            debugout_ << "FrameLoader::readStartIndexMap(): now there are " << fileNum << " files indexed" << std::endl;
             return true;
         }
         else {
-            *debugout_ << "FrameLoader::readStartIndexMap(): File does exist BUT is for a different filePrefix -> drop it" << endl;
+            debugout_ << "FrameLoader::readStartIndexMap(): File does exist BUT is for a different filePrefix -> drop it" << std::endl;
             return false;
         }
     }
     else {
-        *debugout_ << "SmallFrameLoader::readStartIndexMap(): File does not exist yet  ...." << endl;
+        debugout_ << "SmallFrameLoader::readStartIndexMap(): File does not exist yet  ...." << std::endl;
         return false;
     }
 }
 
 void FrameLoader::storeStartIndexMap(){
-    ofstream mapFile;
-    stringstream mapFileName;
-    mapFileName << string(tmpDir) << firstFrameNumber_ << string("_indexBigFrame.txt");
-    *debugout_ << "FrameLoader::storeStartIndexMap(): Writing File: " << mapFileName.str() << endl;
+    std::ofstream mapFile;
+    std::stringstream mapFileName;
+    mapFileName << tmpDir << firstFrameNumber_ << "_indexBigFrame.txt";
+    debugout_ << "FrameLoader::storeStartIndexMap(): Writing File: " << mapFileName << std::endl;
     mapFile.open(mapFileName.str().c_str());
     if(mapFile.is_open()){
-        mapFile << "FILESET:" << filePrefix_ << endl;
-        for(map<int, int>::iterator it = startIndexMap_.begin(); it != startIndexMap_.end(); it++){
-            mapFile << it->first << "\t" << it->second << endl;
+        mapFile << "FILESET:" << filePrefix_ << std::endl;
+        for(std::map<int, int>::iterator it = startIndexMap_.begin(); it != startIndexMap_.end(); it++){
+            mapFile << it->first << "\t" << it->second << std::endl;
         }
         mapFile.close();
-
-        string ARCmd = "chmod 666 ";
+        std::string ARCmd("chmod 666 ");
         ARCmd += mapFileName.str();
         int result = system(ARCmd.c_str());
         if (result != 0) {
-            cerr << "chmod failed " << mapFileName << endl;
+            std::cerr << "chmod failed " << mapFileName << std::endl;
         }
 
     }else{
-        *debugout_ << "FrameLoader::storeStartIndexMap(): Opening failed  ...." << endl;
+        debugout_ << "FrameLoader::storeStartIndexMap(): Opening failed  ...." << std::endl;
     }
 }
 
-void FrameLoader::readHalfFrameStartingFrom(std::ifstream& f, MyPacket& p, int frameNumber) {
-    while(readHalfFrame(f, p) && p->framenum < frameNumber);
+void FrameLoader::readHalfFrameStartingFrom(std::ifstream& f, Packet& p, int frameNumber) {
+    while(readHalfFrame(f, p) && p.framenum < frameNumber);
 }
 
-void FrameLoader::readNextCompleteFrame(std::ifstream& f, FullFrame& ff, MyPacket& firstHalf){
-    MyPacket p1;
-    if(firstHalf.framenum == -1){
+void FrameLoader::readNextCompleteFrame(std::ifstream& f, FullFrame& ff, Packet& firstHalf){
+    Packet p1;
+    if(!firstHalf.is_initialized()){
         readHalfFrame(f, p1);
     } else {
         p1 = firstHalf;
     }
 
-    MyPacket p2;
+    Packet p2;
     readHalfFrame(f, p2);
-    while(p2->framenum != p1->framenum + 1 || p2->framenum % 2 != 0){
-        if(p1 != firstHalf){
-            delete p1;
-        }
+    while(p2.framenum != p1.framenum + 1 || p2.framenum % 2 != 0){
         p1 = p2;
-        p2 = new MyPacket;
+        Packet p2;
         if(!readHalfFrame(f,p2)){
-            *debugout_ << "FrameLoader::readNextCompleteFrame EOF reached" << endl;
-            ff->frame1_number = -1;
+            debugout_ << "FrameLoader::readNextCompleteFrame EOF reached" << std::endl;
+            ff.frame1_number = -1;
             return;
         }
     }
-    ff->frame1_number=p1->framenum;
-    ff->frame2_number=p2->framenum;
-    memcpy(ff->inar,p1->inar,sizeof(short int) * HALFNCH);
-    memcpy(&ff->inar[HALFNCH],p2->inar,sizeof(short int) * HALFNCH);
-    delete p2;
-    if(p1 != firstHalf){
-        delete p1;
-    }
+    ff.frame1_number=p1.framenum;
+    ff.frame2_number=p2.framenum;
+    memcpy(ff.inar, p1.inar, sizeof(short int) * gotthard_constants::kHalfNumberOfChannels);
+    memcpy(&ff.inar[gotthard_constants::kHalfNumberOfChannels], p2.inar,sizeof(short int) * gotthard_constants::kHalfNumberOfChannels);
 }
 
-vector<FullFrame*> FrameLoader::readFrames(int startFrameNumber, int amountOfFullFrames){
+void FrameLoader::readFrames(int startFrameNumber, int amountOfFullFrames, std::vector<FullFrame>& frames){
+    frames.reserve(amountOfFullFrames);
     startFrameNumber += firstFrameNumber_;
-    *debugout_ << "FrameLoader::readFrames: Start reading from: " << startFrameNumber << " will read " << amountOfFullFrames << " frames" << endl;
-    vector<FullFrame *> v;
-    FullFrame *ff, *firstff;
+    debugout_ << "FrameLoader::readFrames: Start reading from: " << startFrameNumber << " will read " << amountOfFullFrames << " frames" << std::endl;
     if(amountOfFullFrames == 0){
-        return v;
+        return;
     }
     std::ifstream f;
     int fileNumber = findFileWithFrame(startFrameNumber);
     bool open_success = openFile(fileNumber, f);
     if(open_success){
-        MyPacket p;
+        Packet p;
         readHalfFrameStartingFrom(f, p, startFrameNumber);
         FullFrame firstff;
-        readNextCompleteFrame(f, firstff, &p);
-        v.push_back(firstff);
-        lastFrameNumber_ = firstff->frame2_number;
+        readNextCompleteFrame(f, firstff, p);
+        frames.push_back(firstff);
+        lastFrameNumber_ = firstff.frame2_number;
         while(lastFrameNumber_ < startFrameNumber + amountOfFullFrames * 2){
             FullFrame ff;
-            MyPacket empty_packet;
+            Packet empty_packet;
             readNextCompleteFrame(f, ff, empty_packet);
-            if(ff->frame1_number == -1){
+            if(ff.frame1_number == -1){
                 //open next file and try again to read frame
                 f.close();
                 int nextFrameNumber = lastFrameNumber_ + 2;
-                *debugout_ << "EOF reached. Try to find file with frame number: " << nextFrameNumber << endl;
+                debugout_ << "EOF reached. Try to find file with frame number: " << nextFrameNumber << std::endl;
                 fileNumber = findFileWithFrame(nextFrameNumber);
                 open_success = openFile(fileNumber, f);
                 if(!open_success){
-                    cerr << "FrameLoader::readFrames: reached end of dataset while reading frames" << endl;
-                    return v;
+                    std::cerr << "FrameLoader::readFrames: reached end of dataset while reading frames" << std::endl;
+                    return;
                 }
-                readNextCompleteFrame(f, ff);
-                *debugout_ << "Ok. First frame of new file is: " << ff->frame1_number << endl;
+                Packet another_empty_packet;
+                readNextCompleteFrame(f, ff, another_empty_packet);
+                debugout_ << "Ok. First frame of new file is: " << ff.frame1_number << std::endl;
             }
-            v.push_back(ff);
-            lastFrameNumber_ = ff->frame2_number;
+            frames.push_back(ff);
+            lastFrameNumber_ = ff.frame2_number;
         }
         f.close();
-    }else{
-        cerr << "FrameLoader::readFrames: could not find frame with starting number: " << startFrameNumber << endl;
     }
-    return v;
+    else {
+        std::cerr << "FrameLoader::readFrames: could not find frame with starting number: " << startFrameNumber << std::endl;
+    }
+    return;
 }
 
 void FrameLoader::update(){
-    *debugout_ << "FrameLoader::update: Okay ... will look for new data" << endl;
+    debugout_ << "FrameLoader::update: Okay ... will look for new data" << std::endl;
     readStartIndexMap();
     storeStartIndexMap();
 }
@@ -341,18 +331,18 @@ int FrameLoader::findFileWithFrame(int frameNumber){
     int fileNumber = 0;
 
     if(frameNumber > lastFrameNumber_){
-        *debugout_ << "FrameLoader::findFileWithFrame: End of dataset reached" << endl;
-        *debugout_ << "FrameLoader::findFileWithFrame: Will look for new data" << endl;
+        debugout_ << "FrameLoader::findFileWithFrame: End of dataset reached" << std::endl;
+        debugout_ << "FrameLoader::findFileWithFrame: Will look for new data" << std::endl;
         readStartIndexMap();
         storeStartIndexMap();
         if(frameNumber > lastFrameNumber_){
-            cerr << "FrameLoader::findFileWithFrame: Reached end of dataset and now new data available ..." << endl;
+            std::cerr << "FrameLoader::findFileWithFrame: Reached end of dataset and now new data available ..." << std::endl;
             abort();
-            return NULL;
+            return -1;
         }
     }
 
-    for(map<int, int>::iterator it = startIndexMap_.begin(); it != startIndexMap_.end(); ++it){
+    for(std::map<int, int>::iterator it = startIndexMap_.begin(); it != startIndexMap_.end(); ++it){
         int fileStartIndex = it->second;
 
         if(lowerBoundary < fileStartIndex && fileStartIndex <= frameNumber){
@@ -360,47 +350,44 @@ int FrameLoader::findFileWithFrame(int frameNumber){
             fileNumber = it->first;
         }
     }
-    *debugout_ << "FrameLoader::findFileWithFrame: File " << fileNumber << " contains frame " << frameNumber << endl;
+    debugout_ << "FrameLoader::findFileWithFrame: File " << fileNumber << " contains frame " << frameNumber << std::endl;
     return fileNumber;
 }
 
-vector<FullFrame*> FrameLoader::loadAll(){
-    vector<FullFrame *> v;
-    FullFrame *ff;
+void FrameLoader::loadAll(std::vector<FullFrame>& frames){
     int fileId = 0;
     std::ifstream f;
     bool open_success = openFile(fileId, f);
     while(open_success){
         FullFrame ff;
-        readNextCompleteFrame(f, ff);
-        if(ff->frame1_number > 0){
-            v.push_back(ff);
+        Packet empty_packet;
+        readNextCompleteFrame(f, ff, empty_packet);
+        if(ff.frame1_number > 0){
+            frames.push_back(ff);
         }else{
             fileId++;
-            f.close()
+            f.close();
             open_success = openFile(fileId, f);
         }
     }
-    return v;
+    return;
 }
 
-FullFrame *FrameLoader::readFrame(int frameNumber){
-    FullFrame *ff = NULL;
-    MyPacket p;
+void FrameLoader::readFrame(int frameNumber, FullFrame& frame){
+    Packet p;
     frameNumber += firstFrameNumber_;
     int fileNumber = findFileWithFrame(frameNumber);
-    ifstream f;
+    std::ifstream f;
     bool open_success = openFile(fileNumber, f);
     if(open_success){
-        *debugout_ << "scanning file" << endl;
+        debugout_ << "scanning file" << std::endl;
         readHalfFrameStartingFrom(f, p, frameNumber);
-        *debugout_ << "found something. framenumber is: " << p.framenum << " and should be: " << frameNumber <<  endl;
-        FullFrame f;
-        readNextCompleteFrame(f, ff, p);
+        debugout_ << "found something. framenumber is: " << p.framenum << " and should be: " << frameNumber <<  std::endl;
+        readNextCompleteFrame(f, frame, p);
         f.close();
     }
     else {
-        cerr << "could not find frame with number: " << frameNumber << endl;
+        std::cerr << "could not find frame with number: " << frameNumber << std::endl;
     }
-    return ff;
+    return;
 }
