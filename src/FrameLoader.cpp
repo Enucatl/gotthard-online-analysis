@@ -248,22 +248,17 @@ void FrameLoader::readHalfFrameStartingFrom(std::ifstream& f, Packet& p, int fra
     while(readHalfFrame(f, p) && p.framenum < frameNumber);
 }
 
-void FrameLoader::readNextCompleteFrame(std::ifstream& f, FullFrame& ff, Packet& firstHalf){
-    Packet p1;
-    if(!firstHalf.is_initialized()){
-        readHalfFrame(f, p1);
-    } else {
-        p1 = firstHalf;
-    }
+void FrameLoader::readNextCompleteFrame(std::ifstream& f, FullFrame& ff, Packet& p1){
+    if(!p1.is_initialized()) readHalfFrame(f, p1);
 
     Packet p2;
     readHalfFrame(f, p2);
-    while(p2.framenum != p1.framenum + 1 || p2.framenum % 2 != 0){
+    while(p2.frame_number() != p1.frame_number() + 1 || p2.frame_number() % 2){
         p1 = p2;
         Packet p2;
-        if(!readHalfFrame(f,p2)){
+        if(!readHalfFrame(f, p2)){
             debugout_ << "FrameLoader::readNextCompleteFrame EOF reached" << std::endl;
-            ff.frame1_number = -1;
+            ff.set_frame1_number(-1);
             return;
         }
     }

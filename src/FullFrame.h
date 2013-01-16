@@ -7,10 +7,11 @@
 #include "Packet.h"
 
 class FullFrame {
+
 public:
     FullFrame();
     ~FullFrame();
-    void merge_packets(const Packet& p1, const Packet& p2);
+    void read_next_complete_frame(std::istream& f, Packet& p1);
 
 private:
     int frame1_number_;

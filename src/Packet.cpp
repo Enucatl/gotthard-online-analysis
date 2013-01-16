@@ -5,8 +5,22 @@ Packet::Packet():
 {
 }
 
+Packet::Packet(const Packet& other) {
+    frame_number_ = other.frame_number_;
+    pixels_.reserve(other.pixels_.size());
+    std::copy(other.pixels_.begin(), other.pixels_.end(), pixels_.begin());
+}
+
+Packet& Packet::operator=(const Packet& other){
+    frame_number_ = other.frame_number_;
+    pixels_.clear();
+    pixels_.reserve(other.pixels_.size());
+    std::copy(other.pixels_.begin(), other.pixels_.end(), pixels_.begin());
+    return *this;
+}
+
 bool Packet::operator==(const Packet& other) const {
-    return this->frame_number_ == other.frame_number_;
+    return frame_number_ == other.frame_number_;
 }
 
 std::istream& Packet::read_packet(std::istream& is) {

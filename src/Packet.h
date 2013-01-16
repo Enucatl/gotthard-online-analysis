@@ -2,7 +2,9 @@
 #define PACKET_H
 
 #include <iostream>
+#include <fstream>
 #include <vector>
+
 
 #include "gotthard_constants.h"
 
@@ -12,8 +14,10 @@ class Packet {
 public:
     friend class FullFrame;
     Packet();
+    explicit Packet(const Packet& other);
     ~Packet();
     bool operator==(const Packet& other) const;
+    Packet& operator=(const Packet& other);
     std::istream& read_packet(std::istream& is);
     bool is_initialized() const { return frame_number_ != -1; }
     int frame_number() const { return frame_number_; }
