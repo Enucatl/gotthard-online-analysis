@@ -54,10 +54,10 @@ void FrameLoader::analyzeFileSetName(string filePrefix, int trialNumber){
     *debugout_ << "FrameLoader::analyzeFileSetName: without trial number " << filePrefix << endl;
     *debugout_ << "FrameLoader::analyzeFileSetName: trial number is " << trialNumber << endl;
 
-    istringstream *withoutTrialNumberStream = new istringstream(filePrefix.c_str());
+    istringstream withoutTrialNumberStream(filePrefix.c_str());
 
-    std::getline(*withoutTrialNumberStream,filePrefix,':');
-    (*withoutTrialNumberStream) >> dataOffset;
+    std::getline(withoutTrialNumberStream, filePrefix, ':');
+    withoutTrialNumberStream >> dataOffset;
 
 
     *debugout_ << "FrameLoader::analyzeFileSetName: dataOffset is " << dataOffset << endl;
@@ -368,17 +368,17 @@ vector<FullFrame*> FrameLoader::loadAll(){
     vector<FullFrame *> v;
     FullFrame *ff;
     int fileId = 0;
-    FILE *f = openFile(fileId);
-    while(f!=NULL){
-        ff = new FullFrame;
+    std::ifstream f;
+    bool open_success = openFile(fileId, f);
+    while(open_success){
+        FullFrame ff;
         readNextCompleteFrame(f, ff);
         if(ff->frame1_number > 0){
             v.push_back(ff);
         }else{
             fileId++;
-            fclose(f);
-            f = openFile(fileId);
-            delete ff;
+            f.close()
+            open_success = openFile(fileId, f);
         }
     }
     return v;
@@ -388,15 +388,18 @@ FullFrame *FrameLoader::readFrame(int frameNumber){
     FullFrame *ff = NULL;
     MyPacket p;
     frameNumber += firstFrameNumber_;
-    FILE *f = findFileWithFrame(frameNumber);
-    if(f != NULL){
+    int fileNumber = findFileWithFrame(frameNumber);
+    ifstream f;
+    bool open_success = openFile(fileNumber, f);
+    if(open_success){
         *debugout_ << "scanning file" << endl;
-        readHalfFrameStartingFrom(f, &p, frameNumber);
+        readHalfFrameStartingFrom(f, p, frameNumber);
         *debugout_ << "found something. framenumber is: " << p.framenum << " and should be: " << frameNumber <<  endl;
-        ff = new FullFrame;
-        readNextCompleteFrame(f, ff, &p);
-        fclose(f);
-    }else{
+        FullFrame f;
+        readNextCompleteFrame(f, ff, p);
+        f.close();
+    }
+    else {
         cerr << "could not find frame with number: " << frameNumber << endl;
     }
     return ff;
