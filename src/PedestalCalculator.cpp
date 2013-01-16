@@ -6,25 +6,23 @@ PedestalCalculator::PedestalCalculator(std::string file_prefix,
         int amount_of_full_frames):
 frame_loader_(file_prefix, trial_number),
 pedestal_histogram_("pedestal", "pedestal",
-        CHANNEL_NUMBER, 0, CHANNEL_NUMBER) {
-    full_frames_ = frame_loader_.readFrames(start_frame_number, amount_of_full_frames);
+        gotthard_constants::kNumberOfChannels,
+        0,
+        gotthard_constants::kNumberOfChannels) {
+    frame_loader_.readFrames(start_frame_number, amount_of_full_frames, full_frames_);
 }
 
-PedestalCalculator::~PedestalCalculator(){
-    for (std::vector<FullFrame*>::iterator i = full_frames_.begin(); i != full_frames_.end(); ++i) {
-        delete *i;
-    }
-}
+PedestalCalculator::~PedestalCalculator() {}
 
 void PedestalCalculator::calculate_pedestal(){
-    std::vector<double> total_frame(CHANNEL_NUMBER, 0);
-    for (std::vector<FullFrame*>::iterator i = full_frames_.begin(); i != full_frames_.end(); ++i) {
+    std::vector<double> total_frame(gotthard_constants::kNumberOfChannels, 0);
+    for (std::vector<FullFrame>::iterator i = full_frames_.begin(); i != full_frames_.end(); ++i) {
         int total_frames = full_frames_.size();
-        for (int j = 0; j < CHANNEL_NUMBER; j++) {
-            total_frame[j] += static_cast<double>((*i)->inar[j]) / total_frames;
+        for (int j = 0; j < gotthard_constants::kNumberOfChannels; j++) {
+            total_frame[j] += static_cast<double>(i->get_pixel(j)) / total_frames;
         }
     }
-    for (int i = 0; i < CHANNEL_NUMBER; i++) {
+    for (int i = 0; i < gotthard_constants::kNumberOfChannels; i++) {
         pedestal_histogram_.SetBinContent(i + 1, total_frame[i]);
     }
 }

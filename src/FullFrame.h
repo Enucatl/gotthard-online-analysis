@@ -12,6 +12,9 @@ public:
     FullFrame();
     ~FullFrame();
     void read_next_complete_frame(std::istream& f, Packet& p1);
+    int frame1_number() const { return frame1_number_; }
+    int frame2_number() const { return frame2_number_; }
+    unsigned int get_pixel(int i) const { return pixels_.at(i); }
 
 private:
     int frame1_number_;

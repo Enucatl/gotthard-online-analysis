@@ -21,6 +21,8 @@ public:
     std::istream& read_packet(std::istream& is);
     bool is_initialized() const { return frame_number_ != -1; }
     int frame_number() const { return frame_number_; }
+    unsigned int get_pixel(int i) const { return pixels_.at(i); }
+    int size() const { return pixels_.size(); }
 
 private:
     std::vector<unsigned short> pixels_;

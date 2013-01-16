@@ -89,7 +89,7 @@ int FrameLoader::readFirstFrameNumber(int fileNumber){
     }
     Packet p;
     if(readHalfFrame(firstFile, p)){
-        firstIndex = p.framenum;
+        firstIndex = p.frame_number();
     }
     else {
         internalError_ = -2;
@@ -109,25 +109,28 @@ bool FrameLoader::openFile(int number, std::ifstream& f){
         filename << "f";
         filename.fill('0');
         filename.width(12);
-        filename << number * gotthard_constants::kFramesPerFile << "_" << trialNumber_ << ".raw";
-        debugout_ << "FrameLoader::openFile: Try to open file " << filename << std::endl;
+        filename << number * gotthard_constants::kFramesPerFile;
+        filename << "_" << trialNumber_ << ".raw";
+        debugout_ << "FrameLoader::openFile: Try to open file " << filename.str() << std::endl;
         f.open(filename.str().c_str(), std::ifstream::binary);
         if(!f.good()){
-            debugout_ << "FrameLoader::openFile: can not open " << filename << std::endl;
+            debugout_ << "FrameLoader::openFile: can not open " << filename.str() << std::endl;
         }
     } else {
         filename.fill('0');
         filename.width(9);
-        filename << number << ".dat";
-        debugout_ << "FrameLoader::openFile: Try to open file " << filename << std::endl;
+        filename << number;
+        filename << ".dat";
+        debugout_ << "FrameLoader::openFile: Try to open file " << filename.str() << std::endl;
         f.open(filename.str().c_str(), std::ifstream::binary);
         if(!f.good()){
             debugout_ << "FrameLoader::openFile: *.dat doesnt work" << std::endl;
             std::stringstream new_filename;
             new_filename.fill('0');
             new_filename.width(9);
-            new_filename << number << ".raw";
-            debugout_ << "FrameLoader::openFile: Try to open file " << new_filename << std::endl;
+            new_filename << number;
+            new_filename << ".raw";
+            debugout_ << "FrameLoader::openFile: Try to open file " << new_filename.str() << std::endl;
             f.open(new_filename.str().c_str(), std::ifstream::binary);
             if(!f.good()){
                 debugout_ << "FrameLoader::openFile: *.raw doesnt work" << std::endl;
@@ -174,11 +177,11 @@ int FrameLoader::readLastFrameNumber(int fileNumber){
             lfn = -2;
             internalError_ = -2;
         } else {
-            lfn = lastFrame.framenum;
+            lfn = lastFrame.frame_number();
         }
     }
     else {
-        std::cerr << "could not determine last framenumber of fileSet" << std::endl;
+        std::cerr << "could not determine last frame_number()ber of fileSet" << std::endl;
         lfn = -1;
         internalError_ = -1;
     }
@@ -224,7 +227,7 @@ void FrameLoader::storeStartIndexMap(){
     std::ofstream mapFile;
     std::stringstream mapFileName;
     mapFileName << tmpDir << firstFrameNumber_ << "_indexBigFrame.txt";
-    debugout_ << "FrameLoader::storeStartIndexMap(): Writing File: " << mapFileName << std::endl;
+    debugout_ << "FrameLoader::storeStartIndexMap(): Writing File: " << mapFileName.str() << std::endl;
     mapFile.open(mapFileName.str().c_str());
     if(mapFile.is_open()){
         mapFile << "FILESET:" << filePrefix_ << std::endl;
@@ -245,27 +248,11 @@ void FrameLoader::storeStartIndexMap(){
 }
 
 void FrameLoader::readHalfFrameStartingFrom(std::ifstream& f, Packet& p, int frameNumber) {
-    while(readHalfFrame(f, p) && p.framenum < frameNumber);
+    while(readHalfFrame(f, p) && p.frame_number() < frameNumber);
 }
 
 void FrameLoader::readNextCompleteFrame(std::ifstream& f, FullFrame& ff, Packet& p1){
-    if(!p1.is_initialized()) readHalfFrame(f, p1);
-
-    Packet p2;
-    readHalfFrame(f, p2);
-    while(p2.frame_number() != p1.frame_number() + 1 || p2.frame_number() % 2){
-        p1 = p2;
-        Packet p2;
-        if(!readHalfFrame(f, p2)){
-            debugout_ << "FrameLoader::readNextCompleteFrame EOF reached" << std::endl;
-            ff.set_frame1_number(-1);
-            return;
-        }
-    }
-    ff.frame1_number=p1.framenum;
-    ff.frame2_number=p2.framenum;
-    memcpy(ff.inar, p1.inar, sizeof(short int) * gotthard_constants::kHalfNumberOfChannels);
-    memcpy(&ff.inar[gotthard_constants::kHalfNumberOfChannels], p2.inar,sizeof(short int) * gotthard_constants::kHalfNumberOfChannels);
+    ff.read_next_complete_frame(f, p1);
 }
 
 void FrameLoader::readFrames(int startFrameNumber, int amountOfFullFrames, std::vector<FullFrame>& frames){
@@ -284,12 +271,12 @@ void FrameLoader::readFrames(int startFrameNumber, int amountOfFullFrames, std::
         FullFrame firstff;
         readNextCompleteFrame(f, firstff, p);
         frames.push_back(firstff);
-        lastFrameNumber_ = firstff.frame2_number;
+        lastFrameNumber_ = firstff.frame2_number();
         while(lastFrameNumber_ < startFrameNumber + amountOfFullFrames * 2){
             FullFrame ff;
             Packet empty_packet;
             readNextCompleteFrame(f, ff, empty_packet);
-            if(ff.frame1_number == -1){
+            if(ff.frame1_number() == -1){
                 //open next file and try again to read frame
                 f.close();
                 int nextFrameNumber = lastFrameNumber_ + 2;
@@ -302,10 +289,10 @@ void FrameLoader::readFrames(int startFrameNumber, int amountOfFullFrames, std::
                 }
                 Packet another_empty_packet;
                 readNextCompleteFrame(f, ff, another_empty_packet);
-                debugout_ << "Ok. First frame of new file is: " << ff.frame1_number << std::endl;
+                debugout_ << "Ok. First frame of new file is: " << ff.frame1_number() << std::endl;
             }
             frames.push_back(ff);
-            lastFrameNumber_ = ff.frame2_number;
+            lastFrameNumber_ = ff.frame2_number();
         }
         f.close();
     }
@@ -357,7 +344,7 @@ void FrameLoader::loadAll(std::vector<FullFrame>& frames){
         FullFrame ff;
         Packet empty_packet;
         readNextCompleteFrame(f, ff, empty_packet);
-        if(ff.frame1_number > 0){
+        if(ff.frame1_number() > 0){
             frames.push_back(ff);
         }else{
             fileId++;
@@ -377,7 +364,7 @@ void FrameLoader::readFrame(int frameNumber, FullFrame& frame){
     if(open_success){
         debugout_ << "scanning file" << std::endl;
         readHalfFrameStartingFrom(f, p, frameNumber);
-        debugout_ << "found something. framenumber is: " << p.framenum << " and should be: " << frameNumber <<  std::endl;
+        debugout_ << "found something. frame_number is: " << p.frame_number() << " and should be: " << frameNumber <<  std::endl;
         readNextCompleteFrame(f, frame, p);
         f.close();
     }
