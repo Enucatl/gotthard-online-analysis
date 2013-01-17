@@ -17,7 +17,10 @@ int get_average(const std::vector<FullFrame>& frames, TH1D& histogram){
 
     //check that the histogram has the right number of bins
     int number_of_pixels = frames[0].size();
-    if (number_of_pixels != histogram.GetNbinsX()) return -1;
+    if (number_of_pixels != histogram.GetNbinsX()) {
+        //std::cerr << number_of_pixels << " " << histogram.GetNbinsX() << std::endl;
+        return -2;
+    }
 
     for (int i = 0; i < number_of_pixels; i++) {
         std::vector<unsigned int> values;
@@ -72,4 +75,18 @@ void get_photon_tree(const std::vector<TH1D>& histograms, TTree& tree){
         }
     }
 }
+
+void get_photon_tree_rebinning(std::vector<TH1D>& histograms, int rebinning, TTree& tree){
+    double energy;
+    tree.Branch("energy", &energy, "energy/D");
+    for (std::vector<TH1D>::iterator histogram = histograms.begin(); histogram != histograms.end(); ++histogram) {
+        histogram->Rebin(rebinning);
+        std::cout << std::endl;
+        for (int i = 0; i < histogram->GetNbinsX(); i++) {
+            energy = histogram->GetBinContent(i + 1);
+            tree.Fill();
+        }
+    }
+}
+
 }

@@ -256,6 +256,7 @@ void FrameLoader::readNextCompleteFrame(std::ifstream& f, FullFrame& ff, Packet&
 }
 
 void FrameLoader::readFrames(int startFrameNumber, int amountOfFullFrames, std::vector<FullFrame>& frames){
+    frames.clear();
     frames.reserve(amountOfFullFrames);
     startFrameNumber += firstFrameNumber_;
     debugout_ << "FrameLoader::readFrames: Start reading from: " << startFrameNumber << " will read " << amountOfFullFrames << " frames" << std::endl;
