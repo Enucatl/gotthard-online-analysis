@@ -81,7 +81,7 @@ void get_photon_tree_rebinning(std::vector<TH1D>& histograms, int rebinning, TTr
     tree.Branch("energy", &energy, "energy/D");
     for (std::vector<TH1D>::iterator histogram = histograms.begin(); histogram != histograms.end(); ++histogram) {
         histogram->Rebin(rebinning);
-        std::cout << std::endl;
+        std::cout << "";
         for (int i = 0; i < histogram->GetNbinsX(); i++) {
             energy = histogram->GetBinContent(i + 1);
             tree.Fill();
