@@ -12,3 +12,6 @@ FullFrame: FullFrame*
 
 PedestalCalculator: PedestalCalculator*
 	g++ -c ${CFLAGS} ${LDFLAGS} PedestalCalculator.cpp 
+
+FrameROOTFunctions: FrameROOTFunctions*
+	g++ -c ${CFLAGS} ${LDFLAGS} FrameROOTFunctions.cpp 

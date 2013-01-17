@@ -15,6 +15,7 @@ public:
     int frame1_number() const { return frame1_number_; }
     int frame2_number() const { return frame2_number_; }
     unsigned int get_pixel(int i) const { return pixels_.at(i); }
+    int size() const { return pixels_.size(); }
 
 private:
     int frame1_number_;
