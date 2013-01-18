@@ -1,30 +1,40 @@
 #include "PedestalCalculator.h"
 
-PedestalCalculator::PedestalCalculator(std::string file_prefix,
-        int trial_number,
-        int start_frame_number,
-        int amount_of_full_frames):
-frame_loader_(file_prefix, trial_number),
+PedestalCalculator::PedestalCalculator():
 pedestal_histogram_("pedestal", "pedestal",
         gotthard_constants::kNumberOfChannels,
         0,
+        gotthard_constants::kNumberOfChannels),
+temp_histogram_("temp", "temp",
+        gotthard_constants::kNumberOfChannels,
+        0,
         gotthard_constants::kNumberOfChannels) {
-    frame_loader_.readFrames(start_frame_number, amount_of_full_frames, full_frames_);
+{
 }
 
 PedestalCalculator::~PedestalCalculator() {}
 
-void PedestalCalculator::calculate_pedestal(){
-    std::vector<double> total_frame(gotthard_constants::kNumberOfChannels, 0);
-    for (std::vector<FullFrame>::iterator i = full_frames_.begin(); i != full_frames_.end(); ++i) {
-        int total_frames = full_frames_.size();
-        for (int j = 0; j < gotthard_constants::kNumberOfChannels; j++) {
-            total_frame[j] += static_cast<double>(i->get_pixel(j)) / total_frames;
-        }
+void PedestalCalculator::push(const FullFrame& frame){
+    full_frames_.push(frame);
+    frame_root_functions::get_histogram(frame, temp_histogram_);
+    pedestal_histogram_.Add(&temp_histogram_);
+}
+
+void PedestalCalculator::pop(){
+    frame_root_functions::get_histogram(full_frames_.front(), temp_histogram_);
+    pedestal_histogram_.Add(&temp_histogram_, -1);
+    full_frames_.pop();
+}
+
+int PedestalCalculator::get_pedestal(TH1D& output_histogram) {
+    if (output_histogram.GetNbinsX() != gotthard_constants::kNumberOfChannels) {
+        return -1;
     }
+    double factor = 1 / full_frames_.size();
     for (int i = 0; i < gotthard_constants::kNumberOfChannels; i++) {
-        pedestal_histogram_.SetBinContent(i + 1, total_frame[i]);
+        output_histogram.SetBinContent(i + 1, pedestal_histogram_.GetBinContent(i + 1) * factor);
     }
+    return 0;
 }
 
 int PedestalCalculator::save_histogram(std::string output_name){

@@ -1,22 +1,27 @@
 #include <string>
+#include <queue>
+
 #include "TH1.h"
 #include "TFile.h"
-#include "FrameLoader.h"
+
 #include "gotthard_constants.h"
+#include "FrameROOTFunctions.h"
 
 class PedestalCalculator {
 public:
-    PedestalCalculator(
-            std::string file_prefix,
-            int trial_number,
-            int start_frame_number,
-            int amount_of_full_frames);
+    PedestalCalculator();
     ~PedestalCalculator();
-    void calculate_pedestal();
+    int get_pedestal(TH1D& output_histogram);
     int save_histogram(std::string output_name);
-    const TH1D& get_histogram() { return pedestal_histogram_; }
+    bool empty() const { return full_frames_.empty(); }
+    int size() const { return full_frames_.size(); }
+    void push(const FullFrame& frame);
+    void pop();
+
 private:
-    std::vector<FullFrame> full_frames_;
-    FrameLoader frame_loader_;
+    std::queue<FullFrame> full_frames_;
     TH1D pedestal_histogram_;
+    //the temporary histogram is used to convert frames to TH1 before adding
+    //them to the current pedestal
+    TH1D temp_histogram_;
 };
