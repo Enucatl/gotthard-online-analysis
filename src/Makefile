@@ -15,3 +15,6 @@ PedestalCalculator: PedestalCalculator*
 
 FrameROOTFunctions: FrameROOTFunctions*
 	g++ -c ${CFLAGS} ${LDFLAGS} FrameROOTFunctions.cpp 
+
+Spectrum: Spectrum.cpp Spectrum.h
+	g++ -c ${CFLAGS} ${LDFLAGS} Spectrum.cpp 

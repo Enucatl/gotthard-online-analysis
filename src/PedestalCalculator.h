@@ -10,7 +10,6 @@
 class PedestalCalculator {
 public:
     PedestalCalculator();
-    ~PedestalCalculator();
     int get_pedestal(TH1D& output_histogram);
     int save_histogram(std::string output_name);
     bool empty() const { return full_frames_.empty(); }
@@ -24,4 +23,6 @@ private:
     //the temporary histogram is used to convert frames to TH1 before adding
     //them to the current pedestal
     TH1D temp_histogram_;
+    //min value for a photon to be counted
+    unsigned int threshold;
 };

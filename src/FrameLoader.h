@@ -22,7 +22,7 @@
 #include "FullFrame.h"
 
 #define tmpDir "/tmp/GotthardFileSets_"
-#define DEBUG
+//#define DEBUG
 
 class FrameLoader {
     public:
@@ -33,10 +33,11 @@ class FrameLoader {
         void readFrame(int frameNumber, FullFrame& frame);
         void readFrames(int startFrameNumber, int amountOfFullFrames, std::vector<FullFrame>& frames);
         void loadAll(std::vector<FullFrame>& frames);
-
-    private:
         void readNextCompleteFrame(std::ifstream& f, FullFrame& ff, Packet& firstHalf);
         bool openFile(int number, std::ifstream& f);
+        int firstFrameNumber() const { return firstFrameNumber_; }
+
+    private:
         int readFirstFrameNumber(int fileNumber);
         int readLastFrameNumber(int fileNumber);
         std::istream& readHalfFrame(std::istream &f, Packet& p);
@@ -56,6 +57,7 @@ class FrameLoader {
         std::ostream debugout_;
         int internalError_;
         int trialNumber_;
+        filebuf debug_buffer_;
 };
 
 #endif /* FRAMELOADER_H_ */

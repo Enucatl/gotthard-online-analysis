@@ -10,9 +10,8 @@
 FrameLoader::FrameLoader(std::string filePrefix, int trialNumber):
 debugout_(std::cout.rdbuf()) {
 #ifndef DEBUG
-    filebuf fb;
-    fb.open("/dev/null");
-    debugout_.rdbuf(&fb);
+    debug_buffer_.open("/dev/null", ios::out);
+    debugout_.rdbuf(&debug_buffer_);
 #endif
 
     analyzeFileSetName(filePrefix, trialNumber);
@@ -113,8 +112,8 @@ bool FrameLoader::openFile(int number, std::ifstream& f){
         filename << "_" << trialNumber_ << ".raw";
         debugout_ << "FrameLoader::openFile: Try to open file " << filename.str() << std::endl;
         f.open(filename.str().c_str(), std::ifstream::binary);
-        if(!f.good()){
-            debugout_ << "FrameLoader::openFile: can not open " << filename.str() << std::endl;
+        if(!f.is_open()){
+            debugout_ << "FrameLoader::openFile: cannot open " << filename.str() << std::endl;
         }
     } else {
         filename.fill('0');
@@ -123,7 +122,7 @@ bool FrameLoader::openFile(int number, std::ifstream& f){
         filename << ".dat";
         debugout_ << "FrameLoader::openFile: Try to open file " << filename.str() << std::endl;
         f.open(filename.str().c_str(), std::ifstream::binary);
-        if(!f.good()){
+        if(!f.is_open()){
             debugout_ << "FrameLoader::openFile: *.dat doesnt work" << std::endl;
             std::stringstream new_filename;
             new_filename.fill('0');
@@ -132,7 +131,7 @@ bool FrameLoader::openFile(int number, std::ifstream& f){
             new_filename << ".raw";
             debugout_ << "FrameLoader::openFile: Try to open file " << new_filename.str() << std::endl;
             f.open(new_filename.str().c_str(), std::ifstream::binary);
-            if(!f.good()){
+            if(!f.is_open()){
                 debugout_ << "FrameLoader::openFile: *.raw doesnt work" << std::endl;
             }
         }
@@ -341,13 +340,13 @@ void FrameLoader::loadAll(std::vector<FullFrame>& frames){
     int fileId = 0;
     std::ifstream f;
     bool open_success = openFile(fileId, f);
-    while(open_success){
+    while(open_success) {
         FullFrame ff;
         Packet empty_packet;
         readNextCompleteFrame(f, ff, empty_packet);
         if(ff.frame1_number() > 0){
             frames.push_back(ff);
-        }else{
+        } else {
             fileId++;
             f.close();
             open_success = openFile(fileId, f);

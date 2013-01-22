@@ -16,7 +16,7 @@ void FullFrame::read_next_complete_frame(std::istream& is, Packet& p1) {
             p2.frame_number() % 2) {
         p1 = p2;
         if(!p2.read_packet(is)) {
-            std::cerr << "FrameLoader::readNextCompleteFrame EOF reached" << std::endl;
+            //std::cerr << "FrameLoader::readNextCompleteFrame EOF reached" << std::endl;
             return;
         }
     }

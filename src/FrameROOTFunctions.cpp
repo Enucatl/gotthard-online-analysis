@@ -89,4 +89,33 @@ void get_photon_tree_rebinning(std::vector<TH1D>& histograms, int rebinning, TTr
     }
 }
 
+int subtract_common_mode(TH1D& histogram, float* peak_positions, int number_of_peaks){
+    double integral = histogram.Integral();
+    int number_of_empty_bins = histogram.GetNbinsX();
+    for (int i = 0; i < number_of_peaks; i++) {
+        int bin = 1 + static_cast<int>(peak_positions[i] + 0.5);
+        integral -= histogram.GetBinContent(bin);
+        number_of_empty_bins--;
+        if (bin == 1){
+            integral -= histogram.GetBinContent(bin + 1);
+            number_of_empty_bins--;
+        }
+        else if (bin == histogram.GetNbinsX()){
+            integral -= histogram.GetBinContent(bin - 1);
+            number_of_empty_bins--;
+        }
+        else {
+            integral -= histogram.GetBinContent(bin + 1);
+            integral -= histogram.GetBinContent(bin - 1);
+            number_of_empty_bins -= 2;
+        }
+    }
+    double common_mode = integral / number_of_empty_bins;
+    for (int i = 0; i < histogram.GetNbinsX(); i++) {
+        double content = histogram.GetBinContent(i + 1);
+        histogram.SetBinContent(i + 1, content - common_mode);
+    }
+    return 0;
+}
+
 }

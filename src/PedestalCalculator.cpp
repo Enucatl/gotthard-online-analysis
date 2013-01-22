@@ -9,10 +9,7 @@ temp_histogram_("temp", "temp",
         gotthard_constants::kNumberOfChannels,
         0,
         gotthard_constants::kNumberOfChannels) {
-{
 }
-
-PedestalCalculator::~PedestalCalculator() {}
 
 void PedestalCalculator::push(const FullFrame& frame){
     full_frames_.push(frame);
@@ -30,7 +27,7 @@ int PedestalCalculator::get_pedestal(TH1D& output_histogram) {
     if (output_histogram.GetNbinsX() != gotthard_constants::kNumberOfChannels) {
         return -1;
     }
-    double factor = 1 / full_frames_.size();
+    double factor = 1.0 / full_frames_.size();
     for (int i = 0; i < gotthard_constants::kNumberOfChannels; i++) {
         output_histogram.SetBinContent(i + 1, pedestal_histogram_.GetBinContent(i + 1) * factor);
     }
