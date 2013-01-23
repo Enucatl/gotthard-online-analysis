@@ -6,6 +6,9 @@ Spectrum::Spectrum(std::string filePrefix, int trialNumber,
     max_photons_per_frame_(max_photons_per_frame), 
     frame_loader_(filePrefix, trialNumber),
     spectrum_("spectrum", "spectrum", number_of_bins, min_bin, max_bin),
+    near_pixel_correlation_("near_pixel_correlation_", "near_pixel_correlation_",
+            number_of_bins, min_bin, max_bin,
+            number_of_bins, min_bin, max_bin),
     frame_hist_("frame_hist_", "frame_hist_",
             gotthard_constants::kNumberOfChannels, 0,
             gotthard_constants::kNumberOfChannels),
@@ -65,25 +68,31 @@ int Spectrum::read_frames(int amount_of_frames){
             frame_root_functions::get_histogram_subtracting_pedestal(frame_, pedestal_, frame_hist_);
             //get maximum without the TH1::GetMaximum method since the following works even
             //if the y-range has been changed with TH1::SetMaximum
-            double maximum = frame_hist_.GetBinContent(
-                    frame_hist_.GetMaximumBin());
+            int max_location = frame_hist_.GetMaximumBin();
+            double maximum = frame_hist_.GetBinContent(max_location);
             if (maximum < threshold_) {
                 //no photon counted
             }
             else { // a photon was found with value > threshold_
-                int number_of_peaks = peak_finder_.Search(&frame_hist_, 2, "nodraw", 0.3);
-                float* positions = peak_finder_.GetPositionX();
+                //int number_of_peaks = peak_finder_.Search(&frame_hist_, 2, "nodraw", 0.3);
+                //float* positions = peak_finder_.GetPositionX();
+                //don't use TSpectrum
+                int number_of_peaks = 1;
+                float positions[1] = {static_cast<float>(max_location)};
                 frame_root_functions::subtract_common_mode(frame_hist_,
                         positions,
                         number_of_peaks);
                 for (int j = 0; j < number_of_peaks; j++) {
-                    int pixel = 1 + static_cast<int>(positions[j] + 0.5);
+                    int pixel = static_cast<int>(positions[j] + 0.5);
                     double energy = frame_hist_.GetBinContent(pixel);
                     //collect nearby pixels as well
                     if (pixel == 1) energy += frame_hist_.GetBinContent(pixel + 1);
                     else if (pixel == gotthard_constants::kNumberOfChannels) energy += frame_hist_.GetBinContent(pixel - 1);
                     else {
-                        energy += frame_hist_.GetBinContent(pixel + 1) + frame_hist_.GetBinContent(pixel - 1);
+                        double y1 = frame_hist_.GetBinContent(pixel + 1);
+                        double y2 = frame_hist_.GetBinContent(pixel - 1);
+                        energy += y1 + y2;
+                        near_pixel_correlation_.Fill(energy, std::max(y1, y2));
                     }
                     spectrum_.Fill(energy);
                     single_pixel_spectrum_[pixel - 1].Fill(energy);

@@ -13,7 +13,7 @@ FullFrame: FullFrame*
 PedestalCalculator: PedestalCalculator*
 	g++ -c ${CFLAGS} ${LDFLAGS} PedestalCalculator.cpp 
 
-FrameROOTFunctions: FrameROOTFunctions*
+FrameROOTFunctions: FrameROOTFunctions.h FrameROOTFunctions.cpp
 	g++ -c ${CFLAGS} ${LDFLAGS} FrameROOTFunctions.cpp 
 
 Spectrum: Spectrum.cpp Spectrum.h

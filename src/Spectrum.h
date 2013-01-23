@@ -5,10 +5,12 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 #include <boost/progress.hpp>
 
 #include "TH1.h"
+#include "TH2.h"
 #include "TSpectrum.h"
 
 #include "Packet.h"
@@ -16,6 +18,7 @@
 #include "FrameROOTFunctions.h"
 #include "FrameLoader.h"
 #include "PedestalCalculator.h"
+#include "gotthard_constants.h"
 
 class Spectrum {
 public:
@@ -30,7 +33,7 @@ public:
     void set_max_photons_per_frame(int value) { max_photons_per_frame_ = value; }
     TH1D get_spectrum() const { return spectrum_; }
     std::vector<TH1D> get_single_pixel_spectrum() const { return single_pixel_spectrum_; }
-
+    TH2D get_near_pixel_correlation() const { return near_pixel_correlation_; }
 
 private:
     int queue_max_size_;
@@ -41,6 +44,7 @@ private:
 
     TH1D spectrum_;
     std::vector<TH1D> single_pixel_spectrum_;
+    TH2D near_pixel_correlation_;
     TH1D frame_hist_;
     TH1D pedestal_;
     TSpectrum peak_finder_;
