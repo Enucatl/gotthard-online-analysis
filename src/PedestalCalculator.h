@@ -12,6 +12,7 @@ class PedestalCalculator {
 public:
     PedestalCalculator();
     int get_pedestal(TH1D& output_histogram);
+    int get_pedestal(FullFrame& output_frame);
     int save_histogram(std::string output_name);
     bool empty() const { return full_frames_.empty(); }
     int size() const { return full_frames_.size(); }
@@ -26,4 +27,5 @@ private:
     TH1D temp_histogram_;
     //min value for a photon to be counted
     unsigned int threshold;
+    const int min_frames_;
 };

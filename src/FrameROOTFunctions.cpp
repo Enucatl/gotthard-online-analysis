@@ -4,8 +4,15 @@ namespace frame_root_functions {
 
 int get_histogram(const FullFrame& frame, TH1D& histogram) {
     if (frame.size() != histogram.GetNbinsX()) return -1;
-    for (int i = 0; i < frame.size(); i++) {
+    //ignore noisy channels
+    for (int i = 0; i < gotthard_constants::kMinUsefulChannel; i++) {
+        histogram.SetBinContent(i + 1, 0);
+    }
+    for (int i = gotthard_constants::kMinUsefulChannel; i < gotthard_constants::kMaxUsefulChannel; i++) {
         histogram.SetBinContent(i + 1, frame.get_pixel(i));
+    }
+    for (int i = gotthard_constants::kMaxUsefulChannel; i < frame.size(); i++) {
+        histogram.SetBinContent(i + 1, 0);
     }
     return 0;
 }

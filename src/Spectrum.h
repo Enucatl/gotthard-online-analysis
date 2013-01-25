@@ -34,8 +34,10 @@ public:
     TH1D get_spectrum() const { return spectrum_; }
     std::vector<TH1D> get_single_pixel_spectrum() const { return single_pixel_spectrum_; }
     TH2D get_near_pixel_correlation() const { return near_pixel_correlation_; }
+    int get_empty_frames() const { return empty_frames_; }
 
 private:
+    int empty_frames_;
     int queue_max_size_;
     int max_photons_per_frame_;
     int threshold_;
