@@ -12,7 +12,7 @@ class PedestalCalculator {
 public:
     PedestalCalculator();
     int get_pedestal(TH1D& output_histogram);
-    int get_pedestal(FullFrame& output_frame);
+    int get_pedestal(std::vector<double>& output_vector);
     int save_histogram(std::string output_name);
     bool empty() const { return full_frames_.empty(); }
     int size() const { return full_frames_.size(); }

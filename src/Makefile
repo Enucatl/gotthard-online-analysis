@@ -18,3 +18,6 @@ FrameROOTFunctions: FrameROOTFunctions.h FrameROOTFunctions.cpp
 
 Spectrum: Spectrum.cpp Spectrum.h
 	g++ -c ${CFLAGS} ${LDFLAGS} Spectrum.cpp 
+
+OfflineTrigger: OfflineTrigger.cpp OfflineTrigger.h
+	g++ -c ${CFLAGS} ${LDFLAGS} OfflineTrigger.cpp 

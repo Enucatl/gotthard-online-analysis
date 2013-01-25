@@ -6,9 +6,12 @@
 #include "gotthard_constants.h"
 #include "Packet.h"
 
+class OfflineTrigger;
+
 class FullFrame {
 
 public:
+    friend class OfflineTrigger;
     FullFrame();
     ~FullFrame();
     void read_next_complete_frame(std::istream& f, Packet& p1);

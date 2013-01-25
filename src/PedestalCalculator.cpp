@@ -50,13 +50,13 @@ int PedestalCalculator::get_pedestal(TH1D& output_histogram) {
     return 0;
 }
 
-int PedestalCalculator::get_pedestal(FullFrame& output_frame) {
-    if (output_frame.size() != gotthard_constants::kNumberOfChannels) {
-        return -1;
+int PedestalCalculator::get_pedestal(std::vector<double>& output_vector) {
+    if (static_cast<int>(output_vector.size()) != gotthard_constants::kNumberOfChannels) {
+        output_vector.resize(gotthard_constants::kNumberOfChannels, 0);
     }
     double factor = 1.0 / full_frames_.size();
     for (int i = 0; i < gotthard_constants::kNumberOfChannels; i++) {
-        output_frame.set_pixel(i, pedestal_histogram_.GetBinContent(i + 1) * factor);
+        output_vector[i] = pedestal_histogram_.GetBinContent(i + 1) * factor;
     }
     return 0;
 }
