@@ -1,6 +1,5 @@
 #include <string>
 #include <queue>
-#include <cmath>
 
 #include "TH1.h"
 #include "TFile.h"
@@ -16,7 +15,7 @@ public:
     int save_histogram(std::string output_name);
     bool empty() const { return full_frames_.empty(); }
     int size() const { return full_frames_.size(); }
-    void push(const FullFrame& frame);
+    bool push(const FullFrame& frame);
     void pop();
 
 private:

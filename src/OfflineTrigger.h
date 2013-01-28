@@ -6,6 +6,7 @@
 #include <sstream>
 #include <fstream>
 #include <algorithm>
+#include <boost/lexical_cast.hpp>
 
 #include "TFile.h"
 #include "TTree.h"
@@ -19,7 +20,7 @@
 class OfflineTrigger {
 public:
     OfflineTrigger(std::string prefix, int run_number,
-            int save_every, int pedestal_min_size);
+            int save_every, int pedestal_min_size, bool delete_files);
     ~OfflineTrigger();
     int start_triggering();
 
@@ -31,6 +32,7 @@ private:
     //save one frame every save_every_ regardless of its photon content
     const int save_every_;
     const int pedestal_min_size_;
+    const bool delete_files_;
     TFile file_;
     TTree tree_;
     FullFrame frame_;

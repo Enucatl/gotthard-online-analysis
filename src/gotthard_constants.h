@@ -8,7 +8,7 @@ namespace gotthard_constants {
     const int kMinUsefulChannel = 450;
     const int kMaxUsefulChannel = 1000;
     const int kFramesPerFile = 20000;
-    const int kNoiseThreshold = 400;
+    const int kNoiseThreshold = 300;
 }
 
 #endif /* end of include guard: GOTTHARD_CONSTANTS_H */
