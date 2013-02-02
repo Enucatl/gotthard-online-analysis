@@ -32,7 +32,7 @@ public:
     void set_threshold(int value) { threshold_ = value; }
     void set_max_photons_per_frame(int value) { max_photons_per_frame_ = value; }
     const TH1D& get_spectrum() { return spectrum_; }
-    const std::vector<TH1D>& get_single_pixel_spectrum() { return single_pixel_spectrum_; }
+    const TH1D& get_single_pixel_spectrum(int pixel) { return single_pixel_spectrum_.at(pixel); }
     const TH2D& get_near_pixel_correlation() const { return near_pixel_correlation_; }
     int get_empty_frames() const { return empty_frames_; }
 

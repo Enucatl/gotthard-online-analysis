@@ -72,7 +72,6 @@ output_name = "{0}{1}_{2}.root".format(
 output_file = ROOT.TFile(output_name, "recreate")
 output_file.cd()
 spectrum_histogram.Write()
-vector = spectrum_analyzer.get_single_pixel_spectrum()
 near_pixel.Write()
 print(spectrum_analyzer.get_empty_frames())
 strip_histogram = ROOT.TH1D(
@@ -82,10 +81,12 @@ strip_histogram = ROOT.TH1D(
         0,
         ROOT.gotthard_constants.kNumberOfChannels)
 
-for i in range(vector.size()):
+for i in range(ROOT.gotthard_constants.kNumberOfChannels):
+    single_strip_hist = spectrum_analyzer.get_single_pixel_spectrum(i)
     strip_histogram.SetBinContent(i + 1,
-            vector[i].Integral())
-    vector[i].Write()
+            single_strip_hist.Integral())
+    single_strip_hist.Write()
+
 strip_histogram.Write()
 
 strip_canvas = ROOT.TCanvas("strip_canvas", "strip_canvas")
