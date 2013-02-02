@@ -57,7 +57,7 @@ class FrameLoader {
         std::ostream debugout_;
         int internalError_;
         int trialNumber_;
-        filebuf debug_buffer_;
+        std::filebuf debug_buffer_;
 };
 
 #endif /* FRAMELOADER_H_ */
