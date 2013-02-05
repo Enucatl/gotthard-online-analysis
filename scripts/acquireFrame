@@ -1,7 +1,0 @@
-#/bin/bash
-
-. config.txt
-
-$P status start
-
-echo script $0 done

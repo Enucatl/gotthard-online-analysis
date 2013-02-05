@@ -1,58 +1,33 @@
+CFLAGS=-Wall `root-config --cflags`
+LDFLAGS=`root-config --glibs`
+BOOST_LIBS=-lboost_program_options -lboost_system -lboost_filesystem
 
-CONFIG=Nothing	#can be overitten by CONFIG=APS for example
+FrameLoader: FrameLoader.* Packet.* FullFrame.*
+	g++ -c FrameLoader.cpp Packet.cpp FullFrame.cpp $(CFLAGS) $(LDFLAGS) 
 
-SVNDEV = -D'SVN_REV="$(shell svnversion -n .)"'
+Packet: Packet.cpp Packet.h
+	g++ -c Packet.cpp $(CFLAGS) $(LDFLAGS) 
 
-BIN_DIR=./bin
-CPP_DIR=./src
-H_DIR=./src
+FullFrame: FullFrame.cpp FullFrame.h Packet
+	g++ -c FullFrame.cpp $(CFLAGS) $(LDFLAGS) 
 
-UI_SRC=IISDict.cpp InterpolationMainFrame.cpp GotthardConfigurator.cpp InterpolationMainModel.cpp
+PedestalCalculator: PedestalCalculator.cpp PedestalCalculator.h
+	g++ -c PedestalCalculator.cpp $(CFLAGS) $(LDFLAGS) 
 
-SRC=$(CPP_DIR)/FrameLoader.cpp $(CPP_DIR)/EtaCreator.cpp $(CPP_DIR)/StreamOperators.cpp $(CPP_DIR)/SmallFrameLoader.cpp
-INCLUDES=$(H_DIR)/InterpolationMainFrame.h $(H_DIR)/InterpolationMainModel.h $(H_DIR)/GotthardConfigurator.h $(H_DIR)/SmallFrameLoader.h
+FrameROOTFunctions: FrameROOTFunctions.h FrameROOTFunctions.cpp
+	g++ -c FrameROOTFunctions.cpp $(CFLAGS) $(LDFLAGS) 
 
+Spectrum: Spectrum.cpp Spectrum.h
+	g++ -c Spectrum.cpp $(CFLAGS) $(LDFLAGS) 
 
-MAINDSINFO=$(CPP_DIR)/DSInfo.cpp
+OfflineTrigger: OfflineTrigger.cpp OfflineTrigger.h
+	g++ -c OfflineTrigger.cpp $(CFLAGS) $(LDFLAGS)
 
-MAINETACREATOR=$(CPP_DIR)/EtaCreatorMain.cpp
+gotthard_utils: gotthard_utils.*
+	g++ -c gotthard_utils.cpp $(BOOST_LIBS) $(CFLAGS) $(LDFLAGS) 
 
-MAINSINOGRAM=$(CPP_DIR)/CreateSinogram.cpp
-
-MAINOEASYDISP=$(CPP_DIR)/offlineEasydisp.cpp
-
-all: dsInfo etaCreatorBig etaCreatorSmall analyzeScanSmall analyzeScanBig offlineEasydispSmall offlineEasydispBig
-
-dsInfo: $(BIN_DIR)/dsInfo
-etaCreatorSmall: $(BIN_DIR)/etaCreatorSmall
-etaCreatorBig: $(BIN_DIR)/etaCreatorBig
-analyzeScanSmall: $(BIN_DIR)/analyzeScanSmall
-analyzeScanBig: $(BIN_DIR)/analyzeScanBig
-offlineEasydispSmall: $(BIN_DIR)/offlineEasydispSmall
-offlineEasydispBig: $(BIN_DIR)/offlineEasydispBig
-
-$(BIN_DIR)/dsInfo: $(SRC) $(MAINDSINFO)
-	g++ -DMYROOT `root-config --cflags --glibs` -o $(BIN_DIR)/dsInfo $(SRC)  $(MAINDSINFO) $(SVNDEV)
-
-$(BIN_DIR)/etaCreatorSmall: $(SRC) $(MAINETACREATOR)
-	g++ -DMYROOT -g `root-config --cflags --glibs` -o $(BIN_DIR)/etaCreatorSF $(SRC)  $(MAINETACREATOR) -DSMALL_FRAMES -D$(CONFIG) $(SVNDEV)
-
-$(BIN_DIR)/etaCreatorBig: $(SRC) $(MAINETACREATOR)
-	g++ -DMYROOT `root-config --cflags --glibs` -o $(BIN_DIR)/etaCreatorBF $(SRC)  $(MAINETACREATOR) -D$(CONFIG) $(SVNDEV)
-
-$(BIN_DIR)/analyzeScanSmall: $(SRC) $(MAINSINOGRAM)
-	g++ -DMYROOT -g `root-config --cflags --glibs` -o $(BIN_DIR)/analyzeScanSF $(SRC)  $(MAINSINOGRAM) -DSMALL_FRAMES -D$(CONFIG) $(SVNDEV)
-
-$(BIN_DIR)/analyzeScanBig: $(SRC) $(MAINSINOGRAM)
-	g++ -DMYROOT -g `root-config --cflags --glibs` -o $(BIN_DIR)/analyzeScanBF $(SRC)  $(MAINSINOGRAM) -D$(CONFIG) $(SVNDEV)
-
-
-$(BIN_DIR)/offlineEasydispSmall: $(MAINOEASYDISP) $(SRC)
-	g++ -DMYROOT -g `root-config --cflags --glibs` -o $(BIN_DIR)/offlineEasydispSF $(SRC)  $(MAINOEASYDISP) -l ncurses -DSMALL_FRAMES $(SVNDEV)
-
-$(BIN_DIR)/offlineEasydispBig: $(MAINOEASYDISP) $(SRC)
-	g++ -DMYROOT -g `root-config --cflags --glibs` -o $(BIN_DIR)/offlineEasydispBF $(SRC)  $(MAINOEASYDISP) -l ncurses $(SVNDEV)
+OfflineTriggerStandalone: OfflineTrigger FrameROOTFunctions PedestalCalculator FullFrame Packet gotthard_utils
+	g++ -o offline_trigger offline_trigger.cpp OfflineTrigger.cpp FrameROOTFunctions.cpp PedestalCalculator.cpp FullFrame.cpp Packet.cpp gotthard_utils.cpp $(CFLAGS) $(BOOST_LIBS) $(LDFLAGS) 
 
 clean:
-	rm -f $(BIN_DIR)/dsInfo $(BIN_DIR)/etaCreatorSF $(BIN_DIR)/etaCreatorBF $(BIN_DIR)/analyzeScanSF $(BIN_DIR)/analyzeScanBF $(BIN_DIR)/offlineEasydispSF $(BIN_DIR)/offlineEasydispBF
-
+	rm *.so *.d *.o *_.cxx
