@@ -1,33 +1,26 @@
-CFLAGS=-Wall `root-config --cflags`
-LDFLAGS=`root-config --glibs`
-BOOST_LIBS=-lboost_program_options -lboost_system -lboost_filesystem
+.PHONY: clean all
+.SUFFIXES: .cpp .o
 
-FrameLoader: FrameLoader.* Packet.* FullFrame.*
-	g++ -c FrameLoader.cpp Packet.cpp FullFrame.cpp $(CFLAGS) $(LDFLAGS) 
+SRC_FOLDER=src
+INC_FOLDER=include
+LIB_FOLDER=lib
+TEST_FOLDER=test
 
-Packet: Packet.cpp Packet.h
-	g++ -c Packet.cpp $(CFLAGS) $(LDFLAGS) 
+CFLAGS=-Wall -I$(INC_FOLDER)
 
-FullFrame: FullFrame.cpp FullFrame.h Packet
-	g++ -c FullFrame.cpp $(CFLAGS) $(LDFLAGS) 
+vpath %.cpp $(SRC_FOLDER) $(TEST_FOLDER)
+vpath %.h $(INC_FOLDER)
 
-PedestalCalculator: PedestalCalculator.cpp PedestalCalculator.h
-	g++ -c PedestalCalculator.cpp $(CFLAGS) $(LDFLAGS) 
+all:
+	echo "nothing"
 
-FrameROOTFunctions: FrameROOTFunctions.h FrameROOTFunctions.cpp
-	g++ -c FrameROOTFunctions.cpp $(CFLAGS) $(LDFLAGS) 
+tests: test_frame_reader
 
-Spectrum: Spectrum.cpp Spectrum.h
-	g++ -c Spectrum.cpp $(CFLAGS) $(LDFLAGS) 
+test_frame_reader: test_frame_reader.cpp $(addprefix $(LIB_FOLDER)/, frame_reader.o)
+	g++ $(CFLAGS) -o $(TEST_FOLDER)/$@ $^
 
-OfflineTrigger: OfflineTrigger.cpp OfflineTrigger.h
-	g++ -c OfflineTrigger.cpp $(CFLAGS) $(LDFLAGS)
-
-gotthard_utils: gotthard_utils.*
-	g++ -c gotthard_utils.cpp $(BOOST_LIBS) $(CFLAGS) $(LDFLAGS) 
-
-OfflineTriggerStandalone: OfflineTrigger FrameROOTFunctions PedestalCalculator FullFrame Packet gotthard_utils
-	g++ -o offline_trigger offline_trigger.cpp OfflineTrigger.cpp FrameROOTFunctions.cpp PedestalCalculator.cpp FullFrame.cpp Packet.cpp gotthard_utils.cpp $(CFLAGS) $(BOOST_LIBS) $(LDFLAGS) 
+$(LIB_FOLDER)/%.o: %.cpp %.h
+	g++ -c $(CFLAGS) -o $@ $< 
 
 clean:
-	rm *.so *.d *.o *_.cxx
+	-rm lib/*.*o python/*.pyc online_viewer single_image_reader

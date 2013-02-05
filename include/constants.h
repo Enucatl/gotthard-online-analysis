@@ -1,7 +1,7 @@
 #ifndef GOTTHARD_CONSTANTS_H
 #define GOTTHARD_CONSTANTS_H
 
-namespace gotthard_constants {
+namespace gotthard {
     const int kBufferLength = 1286;
     const int kHalfNumberOfChannels = 640;
     const int kNumberOfChannels = 1280;
