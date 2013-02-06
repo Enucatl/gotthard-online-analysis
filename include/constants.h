@@ -9,6 +9,7 @@ namespace gotthard {
     const int kMaxUsefulChannel = 1000;
     const int kFramesPerFile = 20000;
     const int kNoiseThreshold = 300;
+    const int kSizeOfStripValue = 2;
 }
 
 #endif /* end of include guard: GOTTHARD_CONSTANTS_H */
