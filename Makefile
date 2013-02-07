@@ -1,4 +1,4 @@
-.PHONY: clean all tests
+.PHONY: clean all tests 
 .SUFFIXES: .cpp .o
 
 SRC_FOLDER=src
@@ -34,8 +34,10 @@ $(TEST_FOLDER)/test_bind: test_bind.cpp
 $(TEST_FOLDER)/write_fake_file: write_fake_file.cpp 
 	g++ $(CFLAGS) -o $@ $^
 
-$(LIB_FOLDER)/%.o: %.cpp %.h
+$(LIB_FOLDER)/%.o: lib %.cpp %.h
 	g++ -c $(CFLAGS) -o $@ $< 
 
+lib: lib
+	mkdir -p lib
 clean:
 	-rm lib/*.*o python/*.pyc online_viewer single_image_reader
