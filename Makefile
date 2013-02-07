@@ -34,10 +34,11 @@ $(TEST_FOLDER)/test_bind: test_bind.cpp
 $(TEST_FOLDER)/write_fake_file: write_fake_file.cpp 
 	g++ $(CFLAGS) -o $@ $^
 
-$(LIB_FOLDER)/%.o: lib %.cpp %.h
+$(LIB_FOLDER)/%.o: %.cpp %.h $(LIB_FOLDER) 
 	g++ -c $(CFLAGS) -o $@ $< 
 
-lib: lib
-	mkdir -p lib
+$(LIB_FOLDER): 
+	mkdir -p $(LIB_FOLDER)
+
 clean:
 	-rm lib/*.*o python/*.pyc online_viewer single_image_reader
