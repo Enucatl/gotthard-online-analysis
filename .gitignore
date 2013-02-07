@@ -1,0 +1,4 @@
+test/test_bind
+test/test_frame_reader
+test/test_pedestal_calculator
+test/write_fake_file

@@ -1,11 +1,14 @@
 #ifndef TRIGGER_H
 #define TRIGGER_H
 
-/* collection of functions to trigger the frames.
- * they return true if the frame is accepted,
- * false if it's rejected.
+/* Triggers the frames, by calculating the subtraction with respect to a
+ * pedestal.
+ * The frame values are changed, and only the subtracted values exist after
+ * this point.
+ * Also returns the original frame, where the bins that have triggered have
+ * been modified and reset to the pedestal value. This is used to update the
+ * pedestal.
  *
- * Thresholds are defined here
  */
 
 namespace gotthard {
@@ -15,8 +18,7 @@ const double kThresholdLow = 200;
 const double kThresholdMid = 300;
 const double kThresholdHigh = 400;
 
-bool threshold();
+}
+}
 
-}
-}
 #endif /* end of include guard: TRIGGER_H */
