@@ -4,14 +4,18 @@
 /* calculate pedestal based on the last number_of_frames frames */
 
 #include <iostream>
+#include <functional>
 #include <algorithm>
 #include <queue>
 
 #include <boost/bind.hpp>
+//make it noncopyable: it makes no sense, and the queue + vector are very
+//expensive to copy
+#include <boost/utility.hpp>
 
 namespace gotthard {
 
-class PedestalCalculator {
+class PedestalCalculator : public boost::noncopyable {
 
 public:
     PedestalCalculator(int number_of_frames, int number_of_strips):
@@ -29,16 +33,6 @@ private:
     std::queue< std::vector<double> > frames_;
     std::vector<double> current_pedestal_;
 };
-
-namespace average_update {
-
-//functions used to update the mean pedestal
-//with std::transform by adding the newest frame
-//and subtracting the oldest one
-
-inline double plus(double factor, double d1, double d2);
-inline double minus(double factor, double d1, double d2);
-}
 }
 
 #endif /* end of include guard: PEDESTAL_CALCULATOR_H */

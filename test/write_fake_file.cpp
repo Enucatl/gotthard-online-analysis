@@ -7,6 +7,7 @@
 const int n = gotthard::kNumberOfChannels;
 
 int main(int argc, const char **argv) {
+
     std::ofstream output(argv[1], std::ios::binary);
     int pedestal_frame_number = 1;
     std::vector<double> pedestal_frame(n, 100);

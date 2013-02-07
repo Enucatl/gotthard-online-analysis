@@ -1,4 +1,4 @@
-.PHONY: clean all
+.PHONY: clean all tests
 .SUFFIXES: .cpp .o
 
 SRC_FOLDER=src
@@ -14,16 +14,19 @@ vpath %.h $(INC_FOLDER)
 all:
 	echo "nothing"
 
-tests: test_frame_reader test_pedestal_calculator write_fake_file
+tests: $(addprefix $(TEST_FOLDER)/, test_frame_reader test_pedestal_calculator write_fake_file test_bind)
 
-test_frame_reader: $(TEST_FOLDER)/test_frame_reader.cpp $(addprefix $(LIB_FOLDER)/, frame_reader.o)
-	g++ $(CFLAGS) -o $(TEST_FOLDER)/$@ $^
+$(TEST_FOLDER)/test_frame_reader: test_frame_reader.cpp $(addprefix $(LIB_FOLDER)/, frame_reader.o)
+	g++ $(CFLAGS) -o $@ $^
 
-test_pedestal_calculator: $(TEST_FOLDER)/test_pedestal_calculator.cpp $(addprefix $(LIB_FOLDER)/, frame_reader.o pedestal_calculator.o)
-	g++ $(CFLAGS) -o $(TEST_FOLDER)/$@ $^
+$(TEST_FOLDER)/test_pedestal_calculator: test_pedestal_calculator.cpp $(addprefix $(LIB_FOLDER)/, frame_reader.o pedestal_calculator.o)
+	g++ $(CFLAGS) -o $@ $^
 
-write_fake_file: write_fake_file.cpp 
-	g++ $(CFLAGS) -o $(TEST_FOLDER)/$@ $^
+$(TEST_FOLDER)/test_bind: test_bind.cpp 
+	g++ $(CFLAGS) -o $@ $^
+
+$(TEST_FOLDER)/write_fake_file: write_fake_file.cpp 
+	g++ $(CFLAGS) -o $@ $^
 
 $(LIB_FOLDER)/%.o: %.cpp %.h
 	g++ -c $(CFLAGS) -o $@ $< 
