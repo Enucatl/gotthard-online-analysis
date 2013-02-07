@@ -21,7 +21,7 @@ public:
     PedestalCalculator(int number_of_frames, int number_of_strips):
         number_of_frames_(number_of_frames),
         factor_(1.0 / number_of_frames),
-    current_pedestal_(number_of_strips, 0) {};
+    current_pedestal_(number_of_strips, 0) {}
     int size() { return frames_.size(); }
     bool empty() { return frames_.empty(); }
     bool push(const std::vector<double>& frame);
