@@ -3,7 +3,7 @@
 namespace gotthard {
 namespace trigger {
 
-bool operator()(std::vector<double>& frame, const std::vector<double>& pedestal) {
+bool Trigger::operator()(std::vector<double>& frame, const std::vector<double>& pedestal) {
     bool triggered = false;
     std::vector<double>::iterator subtracted_iter = subtracted_frame_.begin();
     std::vector<double>::const_iterator pedestal_iter = pedestal.begin();
@@ -15,7 +15,7 @@ bool operator()(std::vector<double>& frame, const std::vector<double>& pedestal)
             *i = *pedestal_iter;
         }
     }
-    
+    return triggered;
 }
 
 }

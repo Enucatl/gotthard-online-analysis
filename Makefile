@@ -14,7 +14,7 @@ vpath %.h $(INC_FOLDER)
 all:
 	echo "nothing"
 
-tests: $(addprefix $(TEST_FOLDER)/, test_frame_reader test_pedestal_calculator write_fake_file test_bind test_trigger)
+tests: $(addprefix $(TEST_FOLDER)/, test_frame_reader test_pedestal_calculator write_fake_file test_bind test_trigger test_trigger_and_pedestal)
 
 $(TEST_FOLDER)/test_frame_reader: test_frame_reader.cpp $(addprefix $(LIB_FOLDER)/, frame_reader.o)
 	g++ $(CFLAGS) -o $@ $^
@@ -23,6 +23,9 @@ $(TEST_FOLDER)/test_pedestal_calculator: test_pedestal_calculator.cpp $(addprefi
 	g++ $(CFLAGS) -o $@ $^
 
 $(TEST_FOLDER)/test_trigger: test_trigger.cpp $(addprefix $(LIB_FOLDER)/, frame_reader.o pedestal_calculator.o trigger.o)
+	g++ $(CFLAGS) -o $@ $^
+
+$(TEST_FOLDER)/test_trigger_and_pedestal: test_trigger_and_pedestal.cpp $(addprefix $(LIB_FOLDER)/, frame_reader.o pedestal_calculator.o trigger.o)
 	g++ $(CFLAGS) -o $@ $^
 
 $(TEST_FOLDER)/test_bind: test_bind.cpp 

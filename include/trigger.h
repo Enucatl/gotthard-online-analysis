@@ -11,6 +11,8 @@
  *
  */
 
+#include <vector>
+
 namespace gotthard {
 namespace trigger {
 

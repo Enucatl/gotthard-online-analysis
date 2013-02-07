@@ -27,7 +27,7 @@ bool PedestalCalculator::push(const std::vector<double>& frame) {
                 current_pedestal_.begin(), current_pedestal_.end(),
                 frames_.front().begin(),
                 current_pedestal_.begin(),
-                boost::bind(std::minus<double>(), boost::bind(std::multiplies<double>(), factor_, _2), _1));
+                boost::bind(std::minus<double>(), _1, boost::bind(std::multiplies<double>(), factor_, _2)));
         frames_.pop();
     }
     return false;

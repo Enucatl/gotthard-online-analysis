@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE frame_reader_test
+#define BOOST_TEST_MODULE pedestal_calculator_test
 
 #include <iostream>
 #include <fstream>
@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(check_pedestal_values) {
     }
 }
 
-BOOST_AUTO_TEST_CASE(check_pedestal_push_pop) {
+BOOST_AUTO_TEST_CASE(check_pedestal_queue_size) {
     int frame_id = -999;
     std::vector<double> frame(n, 0);
     gotthard::FrameReader reader(0, n);
@@ -53,6 +53,41 @@ BOOST_AUTO_TEST_CASE(check_pedestal_push_pop) {
     //size reached, first frame entered should pop
     //and the size should not increase further
     BOOST_CHECK(pedestal_calculator.size() == 2);
+}
+
+BOOST_AUTO_TEST_CASE(check_pedestal_push_pop) {
+    int frame_id = -999;
+    std::vector<double> frame(n, 0);
+    gotthard::FrameReader reader(0, n);
+    std::string file_name("fake.raw");
+    std::ifstream file(file_name.c_str());
+    BOOST_REQUIRE(file.is_open());
+    reader.read_next_frame(file, frame_id, frame);
+    gotthard::PedestalCalculator pedestal_calculator(1, n);
+    pedestal_calculator.push(frame);
+    for (int i = 0; i < n; i++) {
+        double value = pedestal_calculator.get_pedestal()[i];
+        BOOST_CHECK(value == 100);
+    }
+
+    reader.read_next_frame(file, frame_id, frame);
+    for (int i = 0; i < n; i++) {
+        double value = frame[i];
+        //std::cout << value << " ";
+        if (i != 2)
+            BOOST_CHECK(value == 150);
+        else
+            BOOST_CHECK(value == 900);
+    }
+
+    pedestal_calculator.push(frame);
+    for (int i = 0; i < n; i++) {
+        double value = pedestal_calculator.get_pedestal()[i];
+        if (i != 2)
+            BOOST_CHECK(value == 150);
+        else
+            BOOST_CHECK(value == 900);
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
