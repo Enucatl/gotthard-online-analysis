@@ -7,7 +7,7 @@
 #include <boost/test/output_test_stream.hpp>
 
 #include "constants.h"
-
+#include "frame.h"
 #include "frame_reader.h"
 #include "pedestal_calculator.h"
 #include "trigger.h"
@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_SUITE(test_trigger)
 BOOST_AUTO_TEST_CASE(check_trigger) {
     //read pedestal frame
     int frame_id = -999;
-    std::vector<double> frame(n, 0);
+    Frame frame(n, 0);
     gotthard::FrameReader reader(0, n);
     std::string file_name("fake.raw");
     std::ifstream file(file_name.c_str());
@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(check_trigger) {
 BOOST_AUTO_TEST_CASE(check_trigger_swap) {
     //do the same things as in check_trigger
     int frame_id = -999;
-    std::vector<double> frame(n, 0);
+    Frame frame(n, 0);
     gotthard::FrameReader reader(0, n);
     std::string file_name("fake.raw");
     std::ifstream file(file_name.c_str());

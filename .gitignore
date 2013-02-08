@@ -1,4 +1,9 @@
 test/test_bind
 test/test_frame_reader
 test/test_pedestal_calculator
+test/test_trigger
+test/test_trigger_and_pedestal
+test/test_root_tree
 test/write_fake_file
+*.swp
+lib

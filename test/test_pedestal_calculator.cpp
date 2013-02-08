@@ -7,7 +7,7 @@
 #include <boost/test/output_test_stream.hpp>
 
 #include "constants.h"
-
+#include "frame.h"
 #include "frame_reader.h"
 #include "pedestal_calculator.h"
 
@@ -18,7 +18,7 @@ BOOST_AUTO_TEST_SUITE(pedestal_calculator_test)
 
 BOOST_AUTO_TEST_CASE(check_pedestal_values) {
     int frame_id = -999;
-    std::vector<double> frame(n, 0);
+    Frame frame(n, 0);
     gotthard::FrameReader reader(0, n);
     std::string file_name("fake.raw");
     std::ifstream file(file_name.c_str());
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(check_pedestal_values) {
     }
     gotthard::PedestalCalculator pedestal_calculator(1, n);
     pedestal_calculator.push(frame);
-    std::vector<double> pedestal_frame = pedestal_calculator.get_pedestal();
+    Frame pedestal_frame = pedestal_calculator.get_pedestal();
     for (int i = 0; i < n; i++) {
         BOOST_CHECK(pedestal_frame[i] == 100);
     }
@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(check_pedestal_values) {
 
 BOOST_AUTO_TEST_CASE(check_pedestal_queue_size) {
     int frame_id = -999;
-    std::vector<double> frame(n, 0);
+    Frame frame(n, 0);
     gotthard::FrameReader reader(0, n);
     std::string file_name("fake.raw");
     std::ifstream file(file_name.c_str());
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE(check_pedestal_queue_size) {
 
 BOOST_AUTO_TEST_CASE(check_pedestal_push_pop) {
     int frame_id = -999;
-    std::vector<double> frame(n, 0);
+    Frame frame(n, 0);
     gotthard::FrameReader reader(0, n);
     std::string file_name("fake.raw");
     std::ifstream file(file_name.c_str());

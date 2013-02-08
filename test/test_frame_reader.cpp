@@ -7,7 +7,7 @@
 #include <boost/test/output_test_stream.hpp>
 
 #include "constants.h"
-
+#include "frame.h"
 #include "frame_reader.h"
 
 namespace tt = boost::test_tools;
@@ -17,7 +17,7 @@ BOOST_AUTO_TEST_SUITE(frame_reader_test)
 
 BOOST_AUTO_TEST_CASE(check_read_frame) {
     int frame_id = -999;
-    std::vector<double> frame(n, 0);
+    Frame frame(n, 0);
     gotthard::FrameReader reader(0, n);
     std::string file_name("single_frame.raw");
     std::ifstream file(file_name.c_str());
@@ -29,17 +29,15 @@ BOOST_AUTO_TEST_CASE(check_read_frame) {
     //with frame number and all the strip values
     tt::output_test_stream output("single_frame_golden.log", true);
     output << frame_id << std::endl;
-    std::cout << frame_id << std::endl;
     for (int i = 0; i < n; i++) {
         output << frame[i] << " ";
-        std::cout << frame[i] << " ";
     }
     BOOST_CHECK(output.match_pattern());
 }
 
 BOOST_AUTO_TEST_CASE(check_fake_frames) {
     int frame_id = -999;
-    std::vector<double> frame(n, 0);
+    Frame frame(n, 0);
     gotthard::FrameReader reader(0, n);
     std::string file_name("fake.raw");
     std::ifstream file(file_name.c_str());
