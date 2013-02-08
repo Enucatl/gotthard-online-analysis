@@ -13,6 +13,8 @@
 
 #include <vector>
 
+#include "frame.h"
+
 namespace gotthard {
 namespace trigger {
 
@@ -30,16 +32,16 @@ public:
     //reset to the average pedestal value.
     //This is done to avoid a bias in the calculation of the pedestal given
     //by strips that detected a real photon and have a large value
-    bool operator()(std::vector<double>& frame, const std::vector<double>& pedestal);
+    bool operator()(Frame& frame, const Frame& pedestal);
 
     //swap frame with the latest subtracted frame stored in the trigger
     //this subtracted frame is meant to be then saved in a tree or further
     //processed
-    void swap_with_subtracted(std::vector<double>& frame) { subtracted_frame_.swap(frame); }
+    void swap_with_subtracted(Frame& frame) { subtracted_frame_.swap(frame); }
 
 private:
     double threshold_;
-    std::vector<double> subtracted_frame_;
+    Frame subtracted_frame_;
 };
 }
 }

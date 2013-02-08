@@ -2,7 +2,7 @@
 
 namespace gotthard {
 
-bool PedestalCalculator::push(const std::vector<double>& frame) {
+bool PedestalCalculator::push(const Frame& frame) {
     frames_.push(frame);
     //add new frame
     //using boost::bind to compose the standard plus and multiplies

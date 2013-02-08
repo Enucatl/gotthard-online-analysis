@@ -2,14 +2,14 @@
 
 namespace gotthard {
 
-std::ifstream& FrameReader::read_next_frame(std::ifstream& file, int& frame_id, std::vector<double>& frame){
+std::ifstream& FrameReader::read_next_frame(std::ifstream& file, int& frame_id, Frame& frame){
     int first_frame_id = -1;
     int second_frame_id = -1;
 
     //get reference to the two halves (packets)
-    std::vector<double>::iterator begin_first_half = frame.begin();
-    std::vector<double>::iterator begin_second_half = frame.begin() + gotthard::kHalfNumberOfChannels; 
-    std::vector<double>::iterator end_second_half = frame.end(); 
+    Frame::iterator begin_first_half = frame.begin();
+    Frame::iterator begin_second_half = frame.begin() + gotthard::kHalfNumberOfChannels; 
+    Frame::iterator end_second_half = frame.end(); 
 
     first_frame_id = read_id(file);
     frame_id = first_frame_id;
@@ -34,8 +34,8 @@ std::ifstream& FrameReader::read_next_frame(std::ifstream& file, int& frame_id, 
     return file;
 }
 
-std::ifstream& FrameReader::read_packet(std::ifstream& file, std::vector<double>::iterator& begin, std::vector<double>::iterator& end) {
-    for (std::vector<double>::iterator iter = begin; iter != end; ++iter) {
+std::ifstream& FrameReader::read_packet(std::ifstream& file, Frame::iterator& begin, Frame::iterator& end) {
+    for (Frame::iterator iter = begin; iter != end; ++iter) {
         unsigned int value;
         file.read(reinterpret_cast<char*>(&value), gotthard::kSizeOfStripValue);
         *iter = value;

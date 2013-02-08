@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "constants.h"
+#include "frame.h"
 
 namespace gotthard {
 
@@ -31,13 +32,13 @@ public:
     //The frame_id is stored in the frame_id reference
     //The values are stored in the vector frame (that MUST have the correct
     //size beforehand: no error checking is performed!)
-    std::ifstream& read_next_frame(std::ifstream& file, int& frame_id, std::vector<double>& frame);
+    std::ifstream& read_next_frame(std::ifstream& file, int& frame_id, Frame& frame);
 
 private:
     //two utility member functions
     int read_id(std::ifstream& file);
 
-    std::ifstream& read_packet(std::ifstream& file, std::vector<double>::iterator& begin, std::vector<double>::iterator& end);
+    std::ifstream& read_packet(std::ifstream& file, Frame::iterator& begin, Frame::iterator& end);
 
     //data members
     int roi_min_;
