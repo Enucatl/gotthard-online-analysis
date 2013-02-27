@@ -27,6 +27,7 @@ tests: $(addprefix $(TEST_FOLDER)/, $(TESTS))
 	do echo \\n\\n\\n./$$t;\
 	./$$t;\
 	done
+	rm -f root_*.root
 
 $(TEST_FOLDER)/test_tree_manager: test_tree_manager.cpp $(addprefix $(LIB_FOLDER)/, frame_reader.o random_suffix.o tree_manager.o)
 	g++ $(CFLAGS) -o $@ $^ $(ROOT_LDFLAGS) $(BOOST_LDFLAGS) 
