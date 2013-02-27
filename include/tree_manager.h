@@ -24,10 +24,14 @@ public:
 private:
     std::string output_prefix_;
     std::string current_file_name_;
-    TFile file_;
-    TTree tree_;
+    TFile* file_;
+    TTree* tree_;
+
+    //manage the files
     const int max_frames_per_file_;
     int frames_written_;
+    int* frame_number_;
+    Frame* frame_;
 };
 }
 #endif /* end of include guard: TREE_MANAGER_H */
