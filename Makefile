@@ -4,7 +4,9 @@
 SRC_FOLDER=src
 INC_FOLDER=include
 LIB_FOLDER=lib
+BIN_FOLDER=bin
 TEST_FOLDER=test
+FOLDERS=$(BIN_FOLDER) $(LIB_FOLDER)
 
 CFLAGS=-Wall -I$(INC_FOLDER) `root-config --cflags`
 ROOT_LDFLAGS=`root-config --glibs`
@@ -20,8 +22,10 @@ TESTS=test_frame_reader test_pedestal_calculator write_fake_file test_trigger te
 compile_tests: $(addprefix $(TEST_FOLDER)/, $(TESTS))
 
 tests: $(addprefix $(TEST_FOLDER)/, $(TESTS))
+	echo "now running all tests!"
 	cd test; for t in $(TESTS);\
-	do ./$$t;\
+	do echo \\n\\n\\n./$$t;\
+	./$$t;\
 	done
 
 $(TEST_FOLDER)/test_tree_manager: test_tree_manager.cpp $(addprefix $(LIB_FOLDER)/, frame_reader.o random_suffix.o tree_manager.o)
@@ -45,8 +49,8 @@ $(TEST_FOLDER)/write_fake_file: write_fake_file.cpp
 $(LIB_FOLDER)/%.o: %.cpp %.h | $(LIB_FOLDER)
 	g++ -c $(CFLAGS) -o $@ $< 
 
-$(LIB_FOLDER): 
-	mkdir -p $(LIB_FOLDER)
+$(FOLDERS): 
+	mkdir -p $@
 
 clean:
 	-rm -r lib python/*.pyc 

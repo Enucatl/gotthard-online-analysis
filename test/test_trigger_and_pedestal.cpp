@@ -47,7 +47,6 @@ BOOST_AUTO_TEST_CASE(check_passing_frame) {
         else
             BOOST_CHECK(value == 100);
     }
-    std::cout << std::endl;
     trigger.swap_with_subtracted(frame);
     //frame is now subtracted
     for (int i = 0; i < n; i++) {
