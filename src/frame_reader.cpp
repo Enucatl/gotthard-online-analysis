@@ -17,7 +17,7 @@ std::ifstream& FrameReader::read_next_frame(std::ifstream& file, int& frame_id, 
     if (not file) return file; //return if reading packet was bad (usually EOF reached)
 
     //the two packets must have consecutive frame numbers
-    //and the second one must be event
+    //and the second id must be an even number
     //write on the first half and move on with the file
     //until both conditions are satisfied
     second_frame_id = read_id(file);
