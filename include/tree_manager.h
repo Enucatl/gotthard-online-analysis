@@ -13,21 +13,33 @@
 namespace gotthard{
 
 class TreeManager {
+
 public:
     TreeManager(int max_frames_per_file,
-            std::string output_prefix);
-    void make_branches(int& frame_number, Frame& frame);
+            std::string output_prefix,
+            int* frame_number,
+            Frame* frame);
+    ~TreeManager();
+
     std::string current_file_name() {return current_file_name_;}
+
+    //returns bytes written, -1 if write error:
+    //http://root.cern.ch/root/html/TTree.html#TTree:Fill
     int Fill();
-    void Close() {tree_.Write(); file_.Close();}
 
 private:
+    //connect branches to tree as necessary
+    void make_branches();
+
+    //close and open TFile file_
+    void Close();
+    void Open();
+
     std::string output_prefix_;
     std::string current_file_name_;
     TFile* file_;
     TTree* tree_;
 
-    //manage the files
     const int max_frames_per_file_;
     int frames_written_;
     int* frame_number_;
