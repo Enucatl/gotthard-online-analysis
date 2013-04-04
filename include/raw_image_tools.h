@@ -1,6 +1,7 @@
 #ifndef RAW_IMAGE_TOOLS_H_YGVDUMNK
 #define RAW_IMAGE_TOOLS_H_YGVDUMNK
 
+#include <boost/iterator/filter_iterator.hpp>
 #include <boost/filesystem.hpp>
 #include <vector>
 #include <iterator>

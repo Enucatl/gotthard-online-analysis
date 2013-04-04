@@ -19,7 +19,7 @@ public:
             std::string output_prefix,
             int* frame_number,
             Frame* frame);
-    ~TreeManager();
+    virtual ~TreeManager();
 
     //return the name of the file where we are currently writing
     std::string current_file_name() {return current_file_name_;}

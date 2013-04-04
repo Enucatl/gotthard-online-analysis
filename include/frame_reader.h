@@ -26,7 +26,7 @@ public:
     FrameReader(int roi_min, int roi_max):
         roi_min_(roi_min),
         roi_max_(roi_max) {};
-    ~FrameReader() {};
+    virtual ~FrameReader() {};
 
     //read next frame inside a file. It is the resposibility of the caller
     //to open a new file if this function returns false or a bad frame_id

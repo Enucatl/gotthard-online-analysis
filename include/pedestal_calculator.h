@@ -24,7 +24,7 @@ public:
         number_of_frames_(number_of_frames),
         factor_(1.0 / number_of_frames),
         current_pedestal_(number_of_strips, 0) {};
-    ~PedestalCalculator() {};
+    virtual ~PedestalCalculator() {};
     int size() { return frames_.size(); }
     bool empty() { return frames_.empty(); }
     bool push(const Frame& frame);

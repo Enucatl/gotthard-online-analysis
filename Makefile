@@ -8,9 +8,10 @@ BIN_FOLDER=bin
 TEST_FOLDER=test
 FOLDERS=$(BIN_FOLDER) $(LIB_FOLDER)
 
-CFLAGS=-Wall -I$(INC_FOLDER) `root-config --cflags`
+CFLAGS=-g -Wall -I$(INC_FOLDER) `root-config --cflags`
 ROOT_LDFLAGS=`root-config --glibs`
 BOOST_LDFLAGS=-lboost_random
+BOOST_LDFLAGS_FILESYSTEM=-lboost_filesystem -lboost_system
 
 vpath %.cpp $(SRC_FOLDER) $(TEST_FOLDER)
 vpath %.h $(INC_FOLDER)
@@ -18,7 +19,7 @@ vpath %.h $(INC_FOLDER)
 all:
 	echo "nothing"
 
-TESTS=test_frame_reader test_pedestal_calculator write_fake_file test_trigger test_trigger_and_pedestal test_tree_manager
+TESTS=test_frame_reader test_pedestal_calculator write_fake_file test_trigger test_trigger_and_pedestal test_tree_manager test_processor
 compile_tests: $(addprefix $(TEST_FOLDER)/, $(TESTS))
 
 tests: $(addprefix $(TEST_FOLDER)/, $(TESTS))
@@ -29,6 +30,10 @@ tests: $(addprefix $(TEST_FOLDER)/, $(TESTS))
 	done
 	rm -f root_*.root
 	rm -f test/root_*.root
+
+$(TEST_FOLDER)/test_processor: test_processor.cpp $(addprefix $(LIB_FOLDER)/, pedestal_calculator.o trigger.o raw_image_tools.o\
+	frame_reader.o random_suffix.o tree_manager.o frame_processor.o)
+	g++ $(CFLAGS) -o $@ $^ $(ROOT_LDFLAGS) $(BOOST_LDFLAGS) $(BOOST_LDFLAGS_FILESYSTEM)
 
 $(TEST_FOLDER)/test_tree_manager: test_tree_manager.cpp $(addprefix $(LIB_FOLDER)/, frame_reader.o random_suffix.o tree_manager.o)
 	g++ $(CFLAGS) -o $@ $^ $(ROOT_LDFLAGS) $(BOOST_LDFLAGS) 

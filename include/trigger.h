@@ -27,7 +27,7 @@ public:
     ThresholdTrigger(int number_of_strips, double threshold) :
         threshold_(threshold),
         subtracted_frame_(number_of_strips, 0) {}
-    ~ThresholdTrigger() {};
+    virtual ~ThresholdTrigger() {};
     //the frame is changed so that the bins that triggered (i.e. whose
     //difference with respect to the pedestal is larger than threshold_) are
     //reset to the average pedestal value.
