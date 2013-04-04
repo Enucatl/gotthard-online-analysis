@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(check_passing_frame) {
     gotthard::PedestalCalculator pedestal_calculator(1, n);
     pedestal_calculator.push(frame);
 
-    gotthard::trigger::Trigger trigger(n, gotthard::trigger::kThresholdLow);
+    gotthard::trigger::ThresholdTrigger trigger(n, gotthard::trigger::kThresholdLow);
 
     reader.read_next_frame(file, frame_id, frame);
     trigger(frame, pedestal_calculator.get_pedestal());

@@ -21,6 +21,7 @@ public:
             Frame* frame);
     ~TreeManager();
 
+    //return the name of the file where we are currently writing
     std::string current_file_name() {return current_file_name_;}
 
     //returns bytes written, -1 if write error:

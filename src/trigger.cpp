@@ -3,7 +3,7 @@
 namespace gotthard {
 namespace trigger {
 
-bool Trigger::operator()(Frame& frame, const Frame& pedestal) {
+bool ThresholdTrigger::operator()(Frame& frame, const Frame& pedestal) {
     bool triggered = false;
     Frame::iterator subtracted_iter = subtracted_frame_.begin();
     Frame::const_iterator pedestal_iter = pedestal.begin();
