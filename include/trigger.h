@@ -33,7 +33,7 @@ public:
     //reset to the average pedestal value.
     //This is done to avoid a bias in the calculation of the pedestal given
     //by strips that detected a real photon and have a large value
-    bool operator()(Frame& frame, const Frame& pedestal);
+    bool subtract(Frame& frame, const Frame& pedestal);
 
     //swap frame with the latest subtracted frame stored in the trigger
     //this subtracted frame is meant to be then saved in a tree or further

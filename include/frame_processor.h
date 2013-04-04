@@ -2,7 +2,12 @@
 #define FRAME_PROCESSOR_H_26TFI3NG
 
 #include <vector>
+#include <fstream>
 #include <boost/filesystem.hpp>
+
+namespace boost::filesystem = fs;
+
+namespace gotthard {
 
 template<
     class Frame,
@@ -19,7 +24,6 @@ class FrameProcessor:
 {
 public:
     FrameProcessor(
-            std::vector<boost::filesystem::path> input_files,
             int roi_min,
             int roi_max,
             int frames_in_pedestal_queue,
@@ -40,6 +44,8 @@ public:
                 &frame_id_,
                 &frame_) {};
     ~FrameProcessor() {};
+    int process(std::vector<fs::path> input_files);
+            
 
 private:
     int number_of_stripes_;
@@ -47,5 +53,6 @@ private:
     Frame frame_;
 };
 
+}
 #endif /* end of include guard: FRAME_PROCESSOR_H_26TFI3NG */
 

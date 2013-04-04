@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(check_trigger) {
     gotthard::trigger::ThresholdTrigger trigger(n, gotthard::trigger::kThresholdLow);
     reader.read_next_frame(file, frame_id, frame);
     BOOST_CHECK(frame_id == 3);
-    bool triggered = trigger(frame, pedestal_calculator.get_pedestal());
+    bool triggered = trigger.subtract(frame, pedestal_calculator.get_pedestal());
     BOOST_CHECK(triggered);
 }
 
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(check_trigger_swap) {
     pedestal_calculator.push(frame);
     gotthard::trigger::ThresholdTrigger trigger(n, gotthard::trigger::kThresholdLow);
     reader.read_next_frame(file, frame_id, frame);
-    trigger(frame, pedestal_calculator.get_pedestal());
+    trigger.subtract(frame, pedestal_calculator.get_pedestal());
     trigger.swap_with_subtracted(frame);
     for (int i = 0; i < n; i++) {
         int value = 0;

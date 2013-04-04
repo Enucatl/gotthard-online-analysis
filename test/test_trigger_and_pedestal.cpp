@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE(check_passing_frame) {
     gotthard::trigger::ThresholdTrigger trigger(n, gotthard::trigger::kThresholdLow);
 
     reader.read_next_frame(file, frame_id, frame);
-    trigger(frame, pedestal_calculator.get_pedestal());
+    trigger.subtract(frame, pedestal_calculator.get_pedestal());
     BOOST_CHECK(frame_id == 3);
     pedestal_calculator.push(frame);
     BOOST_CHECK(frame[2] == 100);
