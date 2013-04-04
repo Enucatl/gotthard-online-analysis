@@ -14,14 +14,17 @@ TreeManager::TreeManager(int max_frames_per_file,
     tree_(new TTree("gotthard_tree", "gotthard_tree")),
     max_frames_per_file_(max_frames_per_file),
     frames_written_(0),
-    frame_number_(&frame_number),
-    frame_(&frame) {
+    frame_number_(frame_number),
+    frame_(frame),
+    closed_(false) {
+        make_branches();
 }
 
-~TreeManager::TreeManager() {
+TreeManager::~TreeManager() {
     //the TTree is automatically deleted by the file, as explained by
     //http://root.cern.ch/phpBB3/viewtopic.php?f=3&t=16123&p=69212#p69212
-    delete file_;
+    if (not closed_)
+        Close();
 }
 
 void TreeManager::make_branches() {
@@ -36,10 +39,11 @@ int TreeManager::Fill() {
         Open();
     }
     frames_written_++;
-    return tree->Fill();
+    return tree_->Fill();
 }
 
 void TreeManager::Close() {
+    closed_ = true;
     file_->Write();
     file_->Close();
     //the TTree is automatically deleted by the file, as explained by
@@ -48,10 +52,11 @@ void TreeManager::Close() {
 }
 
 void TreeManager::Open() {
-    current_file_name_ = output_prefix + get_random_suffix(3) + ".root";
+    current_file_name_ = output_prefix_ + get_random_suffix(3) + ".root";
     file_ = new TFile(current_file_name_.c_str(), "create");
     tree_ = new TTree("gotthard_tree", "gotthard_tree");
     make_branches();
+    closed_ = false;
 }
 
 }

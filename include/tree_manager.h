@@ -27,13 +27,13 @@ public:
     //http://root.cern.ch/root/html/TTree.html#TTree:Fill
     int Fill();
 
-private:
-    //connect branches to tree as necessary
-    void make_branches();
-
     //close and open TFile file_
     void Close();
     void Open();
+
+private:
+    //connect branches to tree as necessary
+    void make_branches();
 
     std::string output_prefix_;
     std::string current_file_name_;
@@ -44,6 +44,8 @@ private:
     int frames_written_;
     int* frame_number_;
     Frame* frame_;
+
+    bool closed_;
 };
 }
 #endif /* end of include guard: TREE_MANAGER_H */

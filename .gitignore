@@ -4,6 +4,9 @@ test/test_pedestal_calculator
 test/test_trigger
 test/test_trigger_and_pedestal
 test/test_root_tree
+test/test_tree_manager
+*.root
 test/write_fake_file
 *.swp
+*.pdf
 lib
