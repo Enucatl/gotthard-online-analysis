@@ -8,10 +8,10 @@
 
 namespace gotthard {
 
-//check that the file is a valid image file
+//Check that the file is a valid image file.
 bool is_image_file(const boost::filesystem::directory_entry& path);
 
-//get all .raw files in a folder
+//Get all the .raw files in a folder.
 void get_all_raw_files(const boost::filesystem::path& folder, std::vector<boost::filesystem::path>& vector);
 
 }

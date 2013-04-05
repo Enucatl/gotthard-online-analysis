@@ -28,20 +28,22 @@ public:
         roi_max_(roi_max) {};
     virtual ~FrameReader() {};
 
-    //read next frame inside a file. It is the resposibility of the caller
-    //to open a new file if this function returns false or a bad frame_id
-    //The frame_id is stored in the frame_id reference
-    //The values are stored in the vector frame (that MUST have the correct
-    //size beforehand: no error checking is performed!)
+    //Read the next frame from a file. The caller should open the next file
+    //if the file stream reaches EOF, or a bad frame id is read.
+    //Store the frame_id in the frame_id reference.
+    //Store the values in the frame (that MUST have the correct
+    //size beforehand: no error checking is performed!).
+    //Return the file stream after the reading.
     std::ifstream& read_next_frame(std::ifstream& file, int& frame_id, Frame& frame);
 
 private:
-    //two utility member functions
+    //Read the frame id.
     int read_id(std::ifstream& file);
 
+    //Read a half frame.
     std::ifstream& read_packet(std::ifstream& file, Frame::iterator& begin, Frame::iterator& end);
 
-    //data members
+    //Minimum and maximum strip for the region of interest.
     int roi_min_;
     int roi_max_;
 };

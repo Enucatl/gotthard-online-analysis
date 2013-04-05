@@ -9,7 +9,7 @@ bool PedestalCalculator::push(const Frame& frame) {
     //functions from <functional>:
     //bind(f, bind(g, _1))(x) means
     //f(g(x))
-    //in this case, I implemented _1 + factor_ * _2
+    //in this case, the operation is _1 + factor_ * _2
     //see http://www.boost.org/doc/libs/1_53_0/libs/bind/bind.html#nested_binds
     std::transform(
             current_pedestal_.begin(), current_pedestal_.end(),

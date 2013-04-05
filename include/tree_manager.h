@@ -8,7 +8,7 @@
 #include "TTree.h"
 
 #include "frame.h"
-#include "random_suffix.h"
+#include "random_generator.h"
 
 namespace gotthard{
 
@@ -33,9 +33,11 @@ public:
     void Open();
 
 private:
-    //connect branches to tree as necessary
+    //Make the branches for the tree, and set their address to frame_number_
+    //and frame_
     void make_branches();
 
+    //The prefix for all the output ROOT files
     std::string output_prefix_;
     std::string current_file_name_;
     TFile* file_;
@@ -46,6 +48,7 @@ private:
     int* frame_number_;
     Frame* frame_;
 
+    //Was the pointer to the file deleted?
     bool closed_;
 };
 }

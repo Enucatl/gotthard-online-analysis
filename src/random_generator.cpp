@@ -1,4 +1,4 @@
-#include "random_suffix.h"
+#include "random_generator.h"
 
 namespace gotthard {
 namespace random {
@@ -10,7 +10,7 @@ const std::string chars(
 boost::random::random_device rng;
 boost::random::uniform_int_distribution<> index_dist(0, chars.size() - 1);
 
-std::string get_random_suffix(int length) {
+std::string random_string(int length) {
     std::string random_suffix(length + 1, '0');
     random_suffix[0] = '_';
     for (int i = 0; i < length; i++) {

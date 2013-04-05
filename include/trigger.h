@@ -23,27 +23,33 @@ const double kThresholdMid = 300;
 const double kThresholdHigh = 400;
 
 class ThresholdTrigger {
+    //Trigger with a simple threshold with respect to a baseline pedestal.
+
 public:
     ThresholdTrigger(int number_of_strips, double threshold) :
         threshold_(threshold),
         subtracted_frame_(number_of_strips, 0) {}
     virtual ~ThresholdTrigger() {};
-    //the frame is changed so that the bins that triggered (i.e. whose
+
+    //Change the frame so that the bins that triggered (i.e. whose
     //difference with respect to the pedestal is larger than threshold_) are
     //reset to the average pedestal value.
     //This is done to avoid a bias in the calculation of the pedestal given
-    //by strips that detected a real photon and have a large value
+    //by strips that detected a real photon and have a large value.
+    //Return true if some strip had a value larger than the threshold_.
     bool subtract(Frame& frame, const Frame& pedestal);
 
-    //swap frame with the latest subtracted frame stored in the trigger
-    //this subtracted frame is meant to be then saved in a tree or further
-    //processed
+    //Swap the frame with the latest subtracted frame stored in the trigger.
+    //This subtracted frame is meant to be further processed.
+    //The number of copies of the frame that are passed around is thus
+    //reduced.
     void swap_with_subtracted(Frame& frame) { subtracted_frame_.swap(frame); }
 
 private:
     double threshold_;
     Frame subtracted_frame_;
 };
+
 }
 }
 

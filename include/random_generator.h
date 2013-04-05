@@ -7,7 +7,9 @@
 
 namespace gotthard {
 namespace random {
-std::string get_random_suffix(int length);
+
+//Return a random string of given length.
+std::string random_string(int length);
 
 }
 }

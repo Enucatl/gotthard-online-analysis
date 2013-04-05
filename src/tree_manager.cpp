@@ -2,14 +2,14 @@
 
 namespace gotthard {
 
-using gotthard::random::get_random_suffix;
+using gotthard::random::random_string;
 
 TreeManager::TreeManager(int max_frames_per_file,
         std::string output_prefix,
         int* frame_number,
         Frame* frame): 
     output_prefix_(output_prefix),
-    current_file_name_(output_prefix + get_random_suffix(3) + ".root"),
+    current_file_name_(output_prefix + random_string(3) + ".root"),
     file_(new TFile(current_file_name_.c_str(), "create")),
     tree_(new TTree("gotthard_tree", "gotthard_tree")),
     max_frames_per_file_(max_frames_per_file),
@@ -52,7 +52,7 @@ void TreeManager::Close() {
 }
 
 void TreeManager::Open() {
-    current_file_name_ = output_prefix_ + get_random_suffix(3) + ".root";
+    current_file_name_ = output_prefix_ + random_string(3) + ".root";
     file_ = new TFile(current_file_name_.c_str(), "create");
     tree_ = new TTree("gotthard_tree", "gotthard_tree");
     make_branches();
