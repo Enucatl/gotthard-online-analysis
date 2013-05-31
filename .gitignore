@@ -9,5 +9,4 @@ test/test_processor
 *.root
 test/write_fake_file
 *.swp
-*.pdf
 lib

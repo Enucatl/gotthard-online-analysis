@@ -65,11 +65,20 @@ template<
 int FrameProcessor<Frame, Reader, PedestalCalculator, Trigger, FileManager>::operator()(std::vector<fs::path> input_files) {
         for (std::vector<fs::path>::const_iterator file_name = input_files.begin(); file_name != input_files.end(); ++file_name) {
             std::ifstream file(file_name->c_str());
-            this->read_next_frame(file, frame_id_, frame_);
-            this->subtract(frame_, this->get_pedestal());
-            this->push(frame_);
-            this->swap_with_subtracted(frame_);
-            this->Fill();
+            if (not this->read_next_frame(file, frame_id_, frame_)) {
+                //open the next file if the frame could not be read
+                //(usually EOF reached)
+                continue;
+            }
+            bool triggered = this->subtract(frame_, this->get_pedestal());
+            bool pedestal_calculated = this->push(frame_);
+            if (pedestal_calculated) {
+                this->swap_with_subtracted(frame_);
+                this->Fill();
+            }
+            else {
+                continue
+            }
         }
         return 0;
 }

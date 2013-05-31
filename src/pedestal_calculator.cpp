@@ -4,8 +4,11 @@ namespace gotthard {
 
 bool PedestalCalculator::push(const Frame& frame) {
     frames_.push(frame);
-    //add new frame
-    //using boost::bind to compose the standard plus and multiplies
+    //add new frame to the queue
+    //return true if the maximum number of frames was stored in the queue,
+    //false otherwise.
+    //
+    //use boost::bind to compose the standard plus and multiplies
     //functions from <functional>:
     //bind(f, bind(g, _1))(x) means
     //f(g(x))
@@ -29,8 +32,11 @@ bool PedestalCalculator::push(const Frame& frame) {
                 current_pedestal_.begin(),
                 boost::bind(std::minus<double>(), _1, boost::bind(std::multiplies<double>(), factor_, _2)));
         frames_.pop();
+        return true;
     }
-    return false;
+    else {
+        return false;
+    }
 }
 
 }
